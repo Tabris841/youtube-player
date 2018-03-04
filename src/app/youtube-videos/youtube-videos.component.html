@@ -1,10 +1,20 @@
 <article class="col-md-12">
-  <h1>Search Results</h1>
+  <div>
+    <form class="navbar-form form-search" id="media-explorer" (ngSubmit)="search(mediaSearch.value)">
+      <div class="form-group clearfix">
+        <input placeholder="Explore Media" id="media-search" type="search" class="form-control" autocomplete="off" [value]="searchQuery"
+          #mediaSearch name="mediaSearch">
+        <button class="btn btn-transparent btn-submit" type="submit" title="search with echoes">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
   <code>
     There are {{ (videos$ | async).length }} videos
   </code>
   <ul class="list-unstyled">
-    <li *ngFor="let video of (videos$ | async)">
+    <li *ngFor="let video of (videos$ | async)" (click)="queueSelectedVideo(video)">
       <img [src]="video.snippet.thumbnails.default.url"> {{ video.snippet.title }}
     </li>
   </ul>

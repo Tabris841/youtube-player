@@ -1,6 +1,14 @@
-import { Http, URLSearchParams, Response, RequestOptionsArgs, Headers } from '@angular/http';
+import {
+  Http,
+  URLSearchParams,
+  Response,
+  RequestOptionsArgs,
+  Headers
+} from '@angular/http';
 import { Injectable } from '@angular/core';
+
 import { YOUTUBE_API_KEY, CLIENT_ID } from './constants';
+
 interface YoutubeApiServiceOptions {
   url?: string;
   http?: Http;
@@ -55,7 +63,9 @@ export class YoutubeApiService {
     this.isSearching = true;
     const options: RequestOptionsArgs = {
       search: this.config,
-      headers: accessToken ? new Headers({ Authorization: `Bearer ${accessToken}` }) : new Headers()
+      headers: accessToken
+        ? new Headers({ Authorization: `Bearer ${accessToken}` })
+        : new Headers()
     };
     return this.http.get(this.url, options);
   }
@@ -67,7 +77,9 @@ export class YoutubeApiService {
     this.isSearching = true;
     const options: RequestOptionsArgs = {
       search: this.config,
-      headers: token ? new Headers({ Authorization: `Bearer ${token}` }) : new Headers()
+      headers: token
+        ? new Headers({ Authorization: `Bearer ${token}` })
+        : new Headers()
     };
     return this.http
       .get(this.url, options)

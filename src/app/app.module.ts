@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 
 import { CoreModule } from './core';
 import { YoutubeVideosModule } from './youtube-videos';
+import { NowPlayingModule } from './now-playing';
 
 // SERVICES
 import { APP_SERVICES } from './core/services';
@@ -25,8 +26,9 @@ import { APP_SERVICES } from './core/services';
     RouterModule.forRoot(ROUTES, { useHash: true }),
     CoreModule,
 
-    YoutubeVideosModule
+    YoutubeVideosModule,
+    NowPlayingModule
   ],
-  providers: [APP_SERVICES]
+  providers: [...APP_SERVICES]
 })
 export class AppModule {}

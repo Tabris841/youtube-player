@@ -6,6 +6,7 @@ import { compose } from '@ngrx/core/compose';
 
 // reducers
 import { videos, EchoesVideos, YoutubeVideosTypes } from './youtube-videos';
+import { YoutubeMediaPlaylist, nowPlaylist } from './now-playlist';
 
 // plugins
 import { localStorageSync } from './ngrx-store-localstorage';
@@ -16,9 +17,10 @@ import { localStorageSync } from './ngrx-store-localstorage';
  */
 export interface EchoesState {
   videos: EchoesVideos;
+  nowPlaylist: YoutubeMediaPlaylist;
 }
 
-const reducers = { videos };
+const reducers = { videos, nowPlaylist };
 
 const composeStore = compose(localStorageSync([], true), combineReducers)({});
 

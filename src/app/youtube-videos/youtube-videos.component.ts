@@ -9,11 +9,7 @@ import {
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { EchoesState } from '../core/store';
-import {
-  EchoesVideos,
-  videos,
-  YoutubeVideosActions
-} from '../core/store/youtube-videos';
+import { EchoesVideos } from '../core/store/youtube-videos';
 import * as YoutubeVideos from '../core/store/youtube-videos/youtube-videos.actions';
 
 import { YoutubeSearch } from '../core/services/youtube-search.service';
@@ -28,6 +24,7 @@ import { YoutubeMediaItemsMock } from '../../../tests/mocks/youtube.media.items'
 })
 export class YoutubeVideosComponent implements OnInit {
   videos$: Observable<EchoesVideos>;
+  searchQuery = '';
 
   constructor(
     private youtubeSearch: YoutubeSearch,
@@ -37,12 +34,13 @@ export class YoutubeVideosComponent implements OnInit {
 
   ngOnInit() {
     this.videos$ = this.store.select(state => state.videos);
-    this.store.dispatch(
-      new YoutubeVideos.AddVideos(<any>YoutubeMediaItemsMock)
-    );
   }
 
-  search(query: string) {}
+  search(query: string) {
+    this.youtubeSearch.search(query, false).then(response => {
+      this.store.dispatch(new YoutubeVideos.AddVideos(response.items));
+    });
+  }
 
   playSelectedVideo(media: GoogleApiYouTubeSearchResource) {}
 
