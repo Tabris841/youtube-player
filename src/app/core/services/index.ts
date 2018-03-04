@@ -5,6 +5,8 @@ import { NowPlaylistService } from './now-playlist.service';
 import { YoutubeVideosInfo } from './youtube-videos-info.service';
 import { GapiLoader } from './gapi-loader.service';
 import { Authorization } from './authorization.service';
+import { YoutubeApiFactory } from './youtube-api.service';
+import { PlayerService } from './player.service';
 
 export * from './user-profile.service';
 export * from './youtube-search.service';
@@ -16,8 +18,9 @@ export * from './authorization.service';
 
 export const APP_SERVICES = [
   UserProfile,
+  YoutubeApiFactory,
   YoutubeSearch,
-  YoutubePlayerService,
+  PlayerService,
   NowPlaylistService,
   YoutubeVideosInfo,
   GapiLoader,

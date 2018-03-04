@@ -18,12 +18,7 @@ export class YoutubeMediaComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    if (this.media.statistics) {
-      this.media.statistics.likeCount = parseInt(this.media.statistics.likeCount, 10);
-      this.media.statistics.viewCount = parseInt(this.media.statistics.viewCount, 10);
-    }
-  }
+  ngOnInit() {}
 
   playVideo(media: YoutubeMediaResource) {
     this.play.next(media);

@@ -6,6 +6,7 @@ import {
   Headers
 } from '@angular/http';
 import { Injectable } from '@angular/core';
+import 'rxjs/add/operator/map';
 
 import { YOUTUBE_API_KEY, CLIENT_ID } from './constants';
 
@@ -16,17 +17,25 @@ interface YoutubeApiServiceOptions {
   config?: any;
 }
 
+@Injectable()
+export class YoutubeApiFactory {
+  create(): YoutubeApiService {
+    return new YoutubeApiService();
+  }
+}
+
 export class YoutubeApiService {
   url: string;
   http: Http;
   idKey: string;
   isSearching: Boolean = false;
-  items: Array<any> = [];
   config: URLSearchParams = new URLSearchParams();
   nextPageToken: string;
   private accessToken: string;
 
-  constructor(options: YoutubeApiServiceOptions) {
+  constructor() {}
+
+  setOptions(options: YoutubeApiServiceOptions) {
     this.resetConfig();
     if (options) {
       this.url = options.url;
@@ -58,6 +67,7 @@ export class YoutubeApiService {
     this.config.set('maxResults', '50');
     this.config.set('pageToken', '');
   }
+
   getList() {
     const accessToken = this.accessToken;
     this.isSearching = true;
@@ -69,6 +79,7 @@ export class YoutubeApiService {
     };
     return this.http.get(this.url, options);
   }
+
   list(id, token?) {
     if (this.idKey) {
       this.config.set(this.idKey, id);
@@ -81,21 +92,18 @@ export class YoutubeApiService {
         ? new Headers({ Authorization: `Bearer ${token}` })
         : new Headers()
     };
-    return this.http
-      .get(this.url, options)
-      .toPromise()
-      .then(response => response.json())
-      .then(response => {
-        this.nextPageToken = response.nextPageToken;
-        this.isSearching = false;
-        return response;
-      });
+    return this.http.get(this.url, options).map(response => {
+      this.nextPageToken = response.json().nextPageToken;
+      this.isSearching = false;
+      return response;
+    });
   }
 
-  searchMore() {
-    if (!this.isSearching && this.items.length) {
+  setNextPageToken() {
+    if (!this.isSearching) {
       this.config.set('pageToken', this.nextPageToken);
     }
+    return this.nextPageToken;
   }
 
   resetPageToken() {

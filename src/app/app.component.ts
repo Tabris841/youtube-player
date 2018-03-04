@@ -1,5 +1,13 @@
 import { Component } from '@angular/core';
-import { YoutubeSearch, YoutubePlayerService, NowPlaylistService } from './core/services';
+import { Store } from '@ngrx/store';
+
+import {
+  YoutubeSearch,
+  YoutubePlayerService,
+  NowPlaylistService
+} from './core/services';
+import { EchoesState } from './core/store';
+import { PlayerService } from './core/services/player.service';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +17,9 @@ import { YoutubeSearch, YoutubePlayerService, NowPlaylistService } from './core/
 export class AppComponent {
   constructor(
     public youtubeSearch: YoutubeSearch,
-    public playerService: YoutubePlayerService,
-    public nowPlaylistService: NowPlaylistService
+    public playerService: PlayerService,
+    public nowPlaylistService: NowPlaylistService,
+    public store: Store<EchoesState>
   ) {}
 
   selectVideo(media: GoogleApiYouTubeVideoResource) {
@@ -25,7 +34,7 @@ export class AppComponent {
 
   playNextVideo(player) {
     this.nowPlaylistService.selectNextIndex();
-    this.playerService.playVideo(this.nowPlaylistService.getCurrent());
+    // this.playerService.playVideo(this.nowPlaylistService.getCurrent());
   }
 
   sortVideo(media: GoogleApiYouTubeSearchResource) {}

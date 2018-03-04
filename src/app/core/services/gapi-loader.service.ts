@@ -12,8 +12,12 @@ export class GapiLoader {
   load(api: string) {
     return this.createApi(api);
   }
+
   _loadApi(api: string, observer) {
-    const gapiAuthLoaded = window['gapi'] && window['gapi'].auth2 && window['gapi'].auth2.getAuthInstance();
+    const gapiAuthLoaded =
+      window['gapi'] &&
+      window['gapi'].auth2 &&
+      window['gapi'].auth2.getAuthInstance();
     if (gapiAuthLoaded && gapiAuthLoaded.currentUser) {
       return observer.next(gapiAuthLoaded);
     }

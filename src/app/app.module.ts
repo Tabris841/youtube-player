@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core';
 import { YoutubeVideosModule } from './youtube-videos';
 import { NowPlayingModule } from './now-playing';
+import { PlayerModule } from './player';
 
 // SERVICES
 import { APP_SERVICES } from './core/services';
@@ -27,7 +28,8 @@ import { APP_SERVICES } from './core/services';
     CoreModule,
 
     YoutubeVideosModule,
-    NowPlayingModule
+    NowPlayingModule,
+    PlayerModule
   ],
   providers: [...APP_SERVICES]
 })

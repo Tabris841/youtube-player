@@ -26,7 +26,9 @@ export class NowPlaylistService {
   }
 
   queueVideo(mediaId: string) {
-    return this.youtubeVideosInfo.api.list(mediaId).map(items => items[0]);
+    return this.youtubeVideosInfo
+      .fetchVideoData(mediaId)
+      .map(items => items[0]);
   }
 
   queueVideos(medias: GoogleApiYouTubeVideoResource[]) {

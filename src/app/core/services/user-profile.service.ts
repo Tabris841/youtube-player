@@ -1,7 +1,7 @@
 import { Http, URLSearchParams, Response } from '@angular/http';
 import { Injectable, NgZone } from '@angular/core';
 
-import { YoutubeApiService } from './youtube-api.service';
+import { YoutubeApiFactory, YoutubeApiService } from './youtube-api.service';
 import { YoutubeVideosInfo } from './youtube-videos-info.service';
 
 @Injectable()
@@ -10,8 +10,14 @@ export class UserProfile {
   public playlistInfo: YoutubeApiService;
   public playlists: YoutubeApiService;
 
-  constructor(private http: Http, private zone: NgZone, private youtubeVideosInfo: YoutubeVideosInfo) {
-    this.playlistInfo = new YoutubeApiService({
+  constructor(
+    private http: Http,
+    private zone: NgZone,
+    private youtubeVideosInfo: YoutubeVideosInfo,
+    private apiFactory: YoutubeApiFactory
+  ) {
+    this.playlistInfo = apiFactory.create();
+    this.playlistInfo.setOptions({
       url: 'https://www.googleapis.com/youtube/v3/playlistItems',
       http: this.http,
       idKey: 'playlistId'
@@ -19,7 +25,8 @@ export class UserProfile {
     // TODO - extract to a Model / Reducer?
     // Reducer - because nextPageToken is changed
     // Model - new _config should be recreated easily with a new nextPageToken
-    this.playlists = new YoutubeApiService({
+    this.playlists = apiFactory.create();
+    this.playlists.setOptions({
       url: 'https://www.googleapis.com/youtube/v3/playlists',
       http: this.http,
       config: {
@@ -57,9 +64,13 @@ export class UserProfile {
 
   fetchPlaylistItems(playlistId: string) {
     const token = this.playlists.config.get('access_token');
-    return this.playlistInfo.list(playlistId, token).then(response => {
-      const videoIds = response.items.map(video => video.snippet.resourceId.videoId).join(',');
-      return this.youtubeVideosInfo.api.list(videoIds);
+    return this.playlistInfo.list(playlistId, token).map(response => {
+      debugger;
+      const videoIds = response
+        .json()
+        .items.map(video => video.snippet.resourceId.videoId)
+        .join(',');
+      return this.youtubeVideosInfo.fetchVideoData(videoIds);
     });
   }
 

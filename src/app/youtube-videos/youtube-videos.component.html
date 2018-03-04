@@ -14,8 +14,11 @@
     There are {{ (videos$ | async).length }} videos
   </code>
   <ul class="list-unstyled">
-    <li *ngFor="let video of (videos$ | async)" (click)="queueSelectedVideo(video)">
-      <img [src]="video.snippet.thumbnails.default.url"> {{ video.snippet.title }}
-    </li>
+    <app-youtube-list [list]="videos$ | async" (queue)="queueSelectedVideo($event)" (play)="playSelectedVideo($event)"></app-youtube-list>
   </ul>
+  <section *ngIf="(videos$ | async).length">
+    <button class="btn btn-primary" (click)="searchMore(mediaSearch.value)">
+      Search More
+    </button>
+  </section>
 </article>

@@ -28,6 +28,7 @@ export class NowPlaylistComponent implements AfterViewChecked {
   ngAfterViewChecked() {
     this.scrollToActiveTrack();
   }
+
   scrollToActiveTrack() {
     if (this.activeTrackElement) {
       this.activeTrackElement.scrollIntoView();

@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { EchoesState } from '../core/store';
 import { NowPlaylistService } from '../core/services/now-playlist.service';
 import { YoutubeMediaPlaylist } from '../core/store/now-playlist';
+import { PlayerService } from '../core/services/player.service';
 
 @Component({
   selector: 'app-now-playing',
@@ -32,7 +33,10 @@ import { YoutubeMediaPlaylist } from '../core/store/now-playlist';
 export class NowPlayingComponent implements OnInit {
   public nowPlaylist$: Observable<YoutubeMediaPlaylist>;
 
-  constructor(public nowPlaylistService: NowPlaylistService) {}
+  constructor(
+    public nowPlaylistService: NowPlaylistService,
+    private playerService: PlayerService
+  ) {}
 
   ngOnInit() {
     this.nowPlaylist$ = this.nowPlaylistService.playlist$;
@@ -40,6 +44,7 @@ export class NowPlayingComponent implements OnInit {
 
   selectVideo(media: GoogleApiYouTubeVideoResource) {
     this.nowPlaylistService.updateIndexByMedia(media.id);
+    this.playerService.playVideo(media);
   }
 
   updateFilter(searchFilter: string) {
