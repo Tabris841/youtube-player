@@ -1,1 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===== Primary Styles ========================================================
+   Author: Oren Farhi, http://orizens.com
+   ========================================================================== */
+/* Application */
+// $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
+@import './css/echoes-variables';
+// @import '~bootstrap-sass/assets/stylesheets/bootstrap';
+@import './css/bootstrap-custom';
+@import './css/core/global';
+@import './css/core/utils';
+
+// temp
+@import './css/layout/navbar.scss';
+@import './css/layout/sidebar.scss';
+@import './css/layout/container.scss';
+@import './css/layout/loader.scss';
+
+$fa-font-path: '../node_modules/font-awesome/fonts';
+@import '~font-awesome/scss/font-awesome';
+
+// Themes
+@import './css/themes/index.themes';
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+  outline: none;
+}
+
+iframe {
+  border: none;
+}
+// ngx-tooltip Style <START>
+tooltip-content .tooltip .tooltip-inner {
+  box-shadow: 0px 0px 2px var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+// -list group item
+.list-group-item,
+button.list-group-item,
+a.list-group-item {
+  background-color: var(--list-group-item-bg);
+  border-color: var(--list-group-item-border);
+  color: var(--list-group-item-text);
+
+  &:hover {
+    background-color: var(--list-group-item-bg-hover);
+    color: var(--list-group-item-text-hover);
+  }
+}

@@ -4,16 +4,20 @@
     "outDir": "../out-tsc/spec",
     "baseUrl": "./",
     "module": "commonjs",
-    "types": [
-      "jasmine",
-      "node"
-    ]
+    "paths": {
+      "~/*": ["/*"],
+      "@utils/*": ["app/shared/utils/*"],
+      "@shared/*": ["app/shared/*"],
+      "@animations/*": ["app/shared/animations/*"],
+      "@core/*": ["app/core/*"],
+      "@api/*": ["app/core/api/*"],
+      "@resolvers/*": ["app/core/resolvers/*"],
+      "@store/*": ["app/core/store/*"],
+      "@mocks/*": ["../tests/mocks/*"],
+      "@env/*": ["environments/*"]
+    },
+    "types": ["jasmine", "node", "gapi", "gapi.youtube", "gapi.auth2", "youtube"]
   },
-  "files": [
-    "test.ts"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+  "files": ["test.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
 }
