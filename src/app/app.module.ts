@@ -9,8 +9,8 @@ import { ROUTES } from './app.routes';
 // App is our top level component
 import { AppComponent } from './app.component';
 
-import { HomeModule } from './home';
 import { CoreModule } from './core';
+import { YoutubeVideosModule } from './youtube-videos';
 
 // SERVICES
 import { APP_SERVICES } from './core/services';
@@ -25,7 +25,7 @@ import { APP_SERVICES } from './core/services';
     RouterModule.forRoot(ROUTES, { useHash: true }),
     CoreModule,
 
-    HomeModule
+    YoutubeVideosModule
   ],
   providers: [APP_SERVICES]
 })

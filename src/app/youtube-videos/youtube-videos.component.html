@@ -1,0 +1,11 @@
+<article class="col-md-12">
+  <h1>Search Results</h1>
+  <code>
+    There are {{ (videos$ | async).length }} videos
+  </code>
+  <ul class="list-unstyled">
+    <li *ngFor="let video of (videos$ | async)">
+      <img [src]="video.snippet.thumbnails.default.url"> {{ video.snippet.title }}
+    </li>
+  </ul>
+</article>

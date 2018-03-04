@@ -10,7 +10,13 @@ import { CoreStoreModule } from './store';
 @NgModule({
   imports: [InfiniteScrollModule, CommonModule, CoreStoreModule],
   declarations: [...CORE_COMPONENTS, SearchPipe],
-  exports: [InfiniteScrollModule, ...CORE_COMPONENTS, CommonModule, CoreStoreModule, SearchPipe],
+  exports: [
+    InfiniteScrollModule,
+    ...CORE_COMPONENTS,
+    CommonModule,
+    CoreStoreModule,
+    SearchPipe
+  ],
   providers: []
 })
 export class CoreModule {}
