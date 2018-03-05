@@ -7,9 +7,16 @@ import { CORE_COMPONENTS } from './components';
 import { PIPES } from './pipes';
 
 import { CoreStoreModule } from './store';
+import { AppEffectsModules } from './effects';
 
 @NgModule({
-  imports: [InfiniteScrollModule, CommonModule, FormsModule, CoreStoreModule],
+  imports: [
+    InfiniteScrollModule,
+    CommonModule,
+    FormsModule,
+    CoreStoreModule,
+    AppEffectsModules
+  ],
   declarations: [...CORE_COMPONENTS, ...PIPES],
   exports: [
     InfiniteScrollModule,

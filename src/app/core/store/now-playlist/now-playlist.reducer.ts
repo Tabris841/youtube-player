@@ -7,7 +7,6 @@ export interface YoutubeMediaPlaylist {
   index: string;
   filter: string;
 }
-
 const initialState: YoutubeMediaPlaylist = {
   videos: [],
   index: '',

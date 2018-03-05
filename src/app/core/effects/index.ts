@@ -1,3 +1,9 @@
 import { EffectsModule } from '@ngrx/effects';
 
-export const AppEffectsModules = EffectsModule.forRoot([]);
+import { YoutubeVideosEffects } from './youtube-videos.effects';
+import { NowPlaylistEffects } from './now-playlist.effects';
+
+export const AppEffectsModules = EffectsModule.forRoot([
+  YoutubeVideosEffects,
+  NowPlaylistEffects
+]);
