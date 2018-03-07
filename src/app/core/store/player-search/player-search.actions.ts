@@ -94,6 +94,11 @@ export class UpdateQueryAction implements Action {
   constructor(public payload: string) {}
 }
 
+export class AddResults implements Action {
+  readonly type = PlayerSearchTypes.ADD_RESULTS;
+  constructor(public payload: GoogleApiYouTubeVideoResource[]) {}
+}
+
 export type PlayerSearchActions =
   | AddPlaylistsToResults
   | AddMetadataToVideos
@@ -110,4 +115,5 @@ export type PlayerSearchActions =
   | ResetResults
   | ErrorInSearch
   | UpdateSearchType
+  | AddResults
   | UpdateQueryAction;

@@ -63,8 +63,12 @@ export function search(
     case PlayerSearchTypes.SEARCH_STARTED:
       return { ...state, isSearching: true };
 
-    // case AddResultsAction.type:
-    //   return AddResultsAction.handler(state, action.payload);
+    case PlayerSearchTypes.ADD_RESULTS:
+      return {
+        ...state,
+        results: [...state.results, ...action.payload],
+        isSearching: false
+      };
 
     case PlayerSearchTypes.RESET_RESULTS:
       return { ...state, results: [] };
