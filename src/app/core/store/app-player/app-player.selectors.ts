@@ -2,7 +2,7 @@ import { Store, createSelector } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { IAppPlayer } from './app-player.reducer';
-import { EchoesState } from '../reducer';
+import { EchoesState } from '@store/reducers';
 
 export const getPlayer = (state: EchoesState) => state.player;
 export const getCurrentMedia = createSelector(

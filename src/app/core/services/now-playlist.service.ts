@@ -1,34 +1,25 @@
-import { Http, URLSearchParams, Response } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/take';
-
-import { EchoesState } from '../store';
-import * as NowPlaylist from '../store/now-playlist/now-playlist.actions';
-
-import {
-  NowPlaylistActions,
-  YoutubeMediaPlaylist
-} from '../store/now-playlist';
+import { take } from 'rxjs/operators';
 
 import { YoutubeVideosInfo } from './youtube-videos-info.service';
+import * as NowPlaylist from '@store/now-playlist';
+import { EchoesState } from '@store/reducers';
 
 @Injectable()
 export class NowPlaylistService {
-  public playlist$: Observable<YoutubeMediaPlaylist>;
+  public playlist$: Observable<NowPlaylist.INowPlaylist>;
 
   constructor(
     public store: Store<EchoesState>,
     private youtubeVideosInfo: YoutubeVideosInfo
   ) {
-    this.playlist$ = this.store.select(state => state.nowPlaylist);
+    this.playlist$ = this.store.select(NowPlaylist.getNowPlaylist);
   }
 
   queueVideo(mediaId: string) {
-    return this.youtubeVideosInfo
-      .fetchVideoData(mediaId)
-      .map(items => items[0]);
+    return this.youtubeVideosInfo.api.list(mediaId).map(items => items[0]);
   }
 
   queueVideos(medias: GoogleApiYouTubeVideoResource[]) {
@@ -44,7 +35,7 @@ export class NowPlaylistService {
   }
 
   updateFilter(filter: string) {
-    this.store.dispatch(new NowPlaylist.ChangeFilter(filter));
+    this.store.dispatch(new NowPlaylist.FilterChange(filter));
   }
 
   clearPlaylist() {
@@ -55,15 +46,40 @@ export class NowPlaylistService {
     this.store.dispatch(new NowPlaylist.SelectNext());
   }
 
+  selectPreviousIndex() {
+    this.store.dispatch(new NowPlaylist.SelectPrevious());
+  }
+
+  trackEnded() {
+    this.store.dispatch(new NowPlaylist.MediaEnded());
+  }
+
   getCurrent() {
     let media;
-    this.playlist$.take(1).subscribe(playlist => {
-      media = playlist.videos.find(video => video.id === playlist.index);
+    this.playlist$.pipe(take(1)).subscribe(playlist => {
+      media = playlist.videos.find(video => video.id === playlist.selectedId);
     });
     return media;
   }
 
   updateIndexByMedia(mediaId: string) {
     this.store.dispatch(new NowPlaylist.UpdateIndexByMedia(mediaId));
+  }
+
+  isInLastTrack(): boolean {
+    let nowPlaylist: NowPlaylist.INowPlaylist;
+    this.playlist$
+      .pipe(take(1))
+      .subscribe(_nowPlaylist => (nowPlaylist = _nowPlaylist));
+    const currentVideoId = nowPlaylist.selectedId;
+    const indexOfCurrentVideo = nowPlaylist.videos.findIndex(
+      video => video.id === currentVideoId
+    );
+    const isCurrentLast = indexOfCurrentVideo + 1 === nowPlaylist.videos.length;
+    return isCurrentLast;
+  }
+
+  seekToTrack(trackEvent) {
+    this.store.dispatch(new NowPlaylist.SeekTo(trackEvent));
   }
 }

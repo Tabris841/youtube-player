@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 
-import { ActionTypes, Actions } from './app-player.actions';
+import { AppPlayerActionTypes, AppPlayerActions } from './app-player.actions';
 
 type GoogleApiYoutubeVideo =
   | GoogleApiYouTubeVideoResource
@@ -12,7 +12,7 @@ export * from './app-player.actions';
 export interface IAppPlayer {
   mediaId: { videoId: string };
   index: number;
-  media?: GoogleApiYoutubeVideo | any;
+  media?: GoogleApiYoutubeVideo;
   showPlayer: boolean;
   playerState: number;
   fullscreen: {
@@ -40,22 +40,22 @@ const initialPlayerState: IAppPlayer = {
 
 export function player(
   state: IAppPlayer = initialPlayerState,
-  action: Actions
+  action: AppPlayerActions
 ): IAppPlayer {
   switch (action.type) {
-    case ActionTypes.PLAY:
+    case AppPlayerActionTypes.PLAY:
       return playVideo(state, action.payload);
 
-    case ActionTypes.QUEUE:
+    case AppPlayerActionTypes.QUEUE:
       return state;
 
-    case ActionTypes.TOGGLE_PLAYER:
+    case AppPlayerActionTypes.TOGGLE_PLAYER:
       return toggleVisibility(state);
 
-    case ActionTypes.UPDATE_STATE:
+    case AppPlayerActionTypes.UPDATE_STATE:
       return changePlayerState(state, action.payload);
 
-    case ActionTypes.FULLSCREEN: {
+    case AppPlayerActionTypes.FULLSCREEN: {
       const on = !state.fullscreen.on;
       let { height, width } = initialPlayerState.fullscreen;
       if (on) {
@@ -66,14 +66,14 @@ export function player(
       return { ...state, fullscreen };
     }
 
-    case ActionTypes.RESET:
+    case AppPlayerActionTypes.RESET:
       return {
         ...state,
         isFullscreen: false,
         playerState: 0
       };
 
-    case ActionTypes.RESET_FULLSCREEN: {
+    case AppPlayerActionTypes.RESET_FULLSCREEN: {
       const fullscreen = initialPlayerState.fullscreen;
       return { ...initialPlayerState, ...state, fullscreen };
     }

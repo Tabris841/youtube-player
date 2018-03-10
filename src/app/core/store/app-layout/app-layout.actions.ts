@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-export class ActionTypes {
+export class AppLayoutActionTypes {
   static SIDEBAR_EXPAND = '[APP LAYOUT] SIDEBAR_EXPAND';
   static SIDEBAR_COLLAPSE = '[APP LAYOUT] SIDEBAR_COLLAPSE';
   static SIDEBAR_TOGGLE = '[APP LAYOUT] SIDEBAR_TOGGLE';
@@ -11,41 +11,43 @@ export class ActionTypes {
 }
 
 export class ReceivedAppVersion implements Action {
-  public type = ActionTypes.APP_VERSION_RECEIVED;
-  constructor(public payload: any) { }
+  public type = AppLayoutActionTypes.APP_VERSION_RECEIVED;
+
+  constructor(public payload: any) {}
 }
 
 export class UpdateAppVersion implements Action {
-  public type = ActionTypes.APP_UPDATE_VERSION;
+  public type = AppLayoutActionTypes.APP_UPDATE_VERSION;
   public payload = '';
 }
 
 export class CheckVersion implements Action {
-  public type = ActionTypes.APP_CHECK_VERSION;
+  public type = AppLayoutActionTypes.APP_CHECK_VERSION;
   public payload = '';
 }
 
 export class ExpandSidebar implements Action {
-  public type = ActionTypes.SIDEBAR_EXPAND;
+  public type = AppLayoutActionTypes.SIDEBAR_EXPAND;
   public payload = true;
 }
 
 export class CollapseSidebar implements Action {
-  public type = ActionTypes.SIDEBAR_COLLAPSE;
+  public type = AppLayoutActionTypes.SIDEBAR_COLLAPSE;
   public payload = false;
 }
 
 export class ToggleSidebar implements Action {
-  public type = ActionTypes.SIDEBAR_TOGGLE;
+  public type = AppLayoutActionTypes.SIDEBAR_TOGGLE;
   public payload = '';
 }
 
 export class ThemeChange implements Action {
-  public type = ActionTypes.APP_THEME_CHANGE;
-  constructor(public payload: string) { }
+  public type = AppLayoutActionTypes.APP_THEME_CHANGE;
+
+  constructor(public payload: string) {}
 }
 
-export type Action =
+export type AppLayoutAction =
   | ReceivedAppVersion
   | UpdateAppVersion
   | CheckVersion

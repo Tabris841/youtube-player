@@ -1,7 +1,7 @@
 import { Store, createSelector } from '@ngrx/store';
 
 import { IUserProfile } from './user-profile.reducer';
-import { EchoesState } from '../reducer';
+import { EchoesState } from '@store/reducers';
 
 export const getUser = (state: EchoesState) => state.user;
 export const getUserPlaylists = createSelector(

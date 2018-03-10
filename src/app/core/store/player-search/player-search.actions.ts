@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-export enum PlayerSearchTypes {
+export enum PlayerSearchActionTypes {
   UPDATE_FILTER = '[PlayerSearch] UPDATE_FILTER',
   UPDATE_QUERY_PARAM = '[PlayerSearch] UPDATE_QUERY_PARAM',
   UPDATE_QUERY = '[PlayerSearch] UPDATE_QUERY',
@@ -21,81 +21,90 @@ export enum PlayerSearchTypes {
 }
 
 export class AddPlaylistsToResults implements Action {
-  readonly type = PlayerSearchTypes.ADD_PLAYLISTS_TO_RESULTS;
+  readonly type = PlayerSearchActionTypes.ADD_PLAYLISTS_TO_RESULTS;
+
   constructor(public payload) {}
 }
 
 export class AddMetadataToVideos implements Action {
-  readonly type = PlayerSearchTypes.ADD_METADATA_TO_VIDEOS;
+  readonly type = PlayerSearchActionTypes.ADD_METADATA_TO_VIDEOS;
+
   constructor(public payload) {}
 }
 
 export class PlaylistsSearchStart implements Action {
-  readonly type = PlayerSearchTypes.PLAYLISTS_SEARCH_START;
+  readonly type = PlayerSearchActionTypes.PLAYLISTS_SEARCH_START;
 }
 
 export class GetSuggestions implements Action {
-  readonly type = PlayerSearchTypes.GET_SUGGESTIONS;
+  readonly type = PlayerSearchActionTypes.GET_SUGGESTIONS;
+
   constructor(public payload: string) {}
 }
 
 export class SearchCurrentQuery implements Action {
-  readonly type = PlayerSearchTypes.SEARCH_CURRENT_QUERY;
+  readonly type = PlayerSearchActionTypes.SEARCH_CURRENT_QUERY;
 }
 
 export class SearchNewQuery implements Action {
-  readonly type = PlayerSearchTypes.SEARCH_NEW_QUERY;
+  readonly type = PlayerSearchActionTypes.SEARCH_NEW_QUERY;
+
   constructor(public payload: string) {}
 }
 
 export class SearchMoreForQuery implements Action {
-  readonly type = PlayerSearchTypes.SEARCH_MORE_FOR_QUERY;
+  readonly type = PlayerSearchActionTypes.SEARCH_MORE_FOR_QUERY;
 }
 
 export class UpdateFilter implements Action {
-  readonly type = PlayerSearchTypes.UPDATE_FILTER;
+  readonly type = PlayerSearchActionTypes.UPDATE_FILTER;
 }
 
 export class UpdateQueryParam implements Action {
-  readonly type = PlayerSearchTypes.UPDATE_QUERY_PARAM;
+  readonly type = PlayerSearchActionTypes.UPDATE_QUERY_PARAM;
+
   constructor(public payload: any) {}
 }
 
 export class ResetPageToken implements Action {
-  readonly type = PlayerSearchTypes.RESET_PAGE_TOKEN;
-  constructor(public payload: any) {}
+  readonly type = PlayerSearchActionTypes.RESET_PAGE_TOKEN;
 }
 
 export class SearchResultsReturned implements Action {
-  readonly type = PlayerSearchTypes.SEARCH_RESULTS_RETURNED;
+  readonly type = PlayerSearchActionTypes.SEARCH_RESULTS_RETURNED;
+
   constructor(public payload: any) {}
 }
 
 export class SearchStarted implements Action {
-  readonly type = PlayerSearchTypes.SEARCH_STARTED;
+  readonly type = PlayerSearchActionTypes.SEARCH_STARTED;
 }
 
 export class ResetResults implements Action {
-  readonly type = PlayerSearchTypes.RESET_RESULTS;
+  readonly type = PlayerSearchActionTypes.RESET_RESULTS;
 }
 
 export class ErrorInSearch implements Action {
-  readonly type = PlayerSearchTypes.ERROR_RESULTS;
+  readonly type = PlayerSearchActionTypes.ERROR_RESULTS;
+
   constructor(public payload: any) {}
 }
 
 export class UpdateSearchType implements Action {
-  readonly type = PlayerSearchTypes.SEARCH_TYPE_UPDATE;
+  readonly type = PlayerSearchActionTypes.SEARCH_TYPE_UPDATE;
+
   constructor(public payload: string) {}
 }
 
 export class UpdateQueryAction implements Action {
-  readonly type = PlayerSearchTypes.UPDATE_QUERY;
+  readonly type = PlayerSearchActionTypes.UPDATE_QUERY;
+
   constructor(public payload: string) {}
 }
 
 export class AddResults implements Action {
-  readonly type = PlayerSearchTypes.ADD_RESULTS;
+  readonly type = PlayerSearchActionTypes.ADD_RESULTS;
+
   constructor(public payload: GoogleApiYouTubeVideoResource[]) {}
 }
 

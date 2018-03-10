@@ -2,67 +2,45 @@ import { Injectable } from '@angular/core';
 import { ActionReducer, Action } from '@ngrx/store';
 import { NowPlaylistActions, NowPlaylistTypes } from './now-playlist.actions';
 
-export interface YoutubeMediaPlaylist {
+export interface INowPlaylist {
   videos: GoogleApiYouTubeVideoResource[];
-  index: string;
+  selectedId: string;
   filter: string;
+  repeat: boolean;
 }
-const initialState: YoutubeMediaPlaylist = {
+const initialState: INowPlaylist = {
   videos: [],
-  index: '',
-  filter: ''
+  selectedId: '',
+  filter: '',
+  repeat: false
 };
 
-export const nowPlaylist: ActionReducer<YoutubeMediaPlaylist> = (
-  state: YoutubeMediaPlaylist = initialState,
+export const nowPlaylist: ActionReducer<INowPlaylist> = (
+  state: INowPlaylist = initialState,
   action: NowPlaylistActions
 ) => {
-  const matchMedia = id => (media: GoogleApiYouTubeVideoResource) => {
-    return media.id === id;
-  };
-
-  const isDifferent = id => (media: GoogleApiYouTubeVideoResource) => {
-    return media.id !== id;
-  };
-
   switch (action.type) {
     case NowPlaylistTypes.SELECT:
-      return Object.assign({}, state, { index: action.payload.id });
+      return { ...state, selectedId: action.payload.id };
 
     case NowPlaylistTypes.QUEUE:
-      return Object.assign({}, state, {
-        videos: addMedia(state.videos, action.payload)
-      });
+      return { ...state, videos: addMedia(state.videos, action.payload) };
 
     case NowPlaylistTypes.QUEUE_VIDEOS:
-      return Object.assign({}, state, {
-        videos: addMedias(state.videos, action.payload)
-      });
+      return { ...state, videos: addMedias(state.videos, action.payload) };
 
     case NowPlaylistTypes.REMOVE:
-      return Object.assign({}, state, {
-        videos: state.videos.filter(isDifferent(action.payload.id))
-      });
+      return { ...state, videos: removeMedia(state.videos, action.payload) };
 
     // updates index by media
     case NowPlaylistTypes.UPDATE_INDEX:
-      return Object.assign({}, state, { index: action.payload });
+      return { ...state, selectedId: action.payload };
 
     case NowPlaylistTypes.FILTER_CHANGE:
-      return Object.assign({}, state, { filter: action.payload });
+      return { ...state, filter: action.payload };
 
     case NowPlaylistTypes.REMOVE_ALL:
-      return Object.assign({}, state, { videos: [], filter: '', index: 0 });
-
-    case NowPlaylistTypes.SELECT_NEXT:
-      return Object.assign({}, state, {
-        index: selectNextIndex(state.videos, state.index)
-      });
-
-    case NowPlaylistTypes.SELECT_PREVIOUS:
-      return Object.assign({}, state, {
-        index: selectPreviousIndex(state.videos, state.index)
-      });
+      return { ...state, videos: [], filter: '', selectedId: '' };
 
     default:
       return state;
@@ -71,8 +49,11 @@ export const nowPlaylist: ActionReducer<YoutubeMediaPlaylist> = (
 
 function addMedia(videos: GoogleApiYouTubeVideoResource[], media: any) {
   const newMedia = [...videos].findIndex(video => video.id === media.id);
-  const newVideos = newMedia === -1 ? videos.push(media) : videos;
-  return [...videos];
+  const newMedias = [];
+  if (newMedia === -1) {
+    newMedias.push(media);
+  }
+  return [...videos, ...newMedias];
 }
 
 function addMedias(videos, medias) {
@@ -86,31 +67,85 @@ function addMedias(videos, medias) {
   return videos.concat(newVideos);
 }
 
+function filterVideos(videos: GoogleApiYouTubeVideoResource[], filter: string) {
+  return videos.filter(video =>
+    JSON.stringify(video)
+      .toLowerCase()
+      .includes(filter.toLowerCase())
+  );
+}
+
 function selectNextIndex(
   videos: GoogleApiYouTubeVideoResource[],
-  index: string
+  selectedId: string,
+  filter: string,
+  isRepeat: boolean
 ): string {
-  const currentIndex: number = videos.findIndex(video => video.id === index);
+  const filteredVideos = filterVideos(videos, filter);
+  const currentIndex: number = filteredVideos.findIndex(
+    video => video.id === selectedId
+  );
   let nextIndex = currentIndex + 1;
-  if (!videos.length) {
+  if (!filteredVideos.length) {
     nextIndex = 0;
   }
-  if (videos.length === nextIndex) {
-    nextIndex = 0;
+  if (filteredVideos.length === nextIndex) {
+    nextIndex = isRepeat ? 0 : currentIndex;
   }
 
-  return videos[nextIndex].id || '';
+  return filteredVideos[nextIndex].id || '';
 }
 
 function selectPreviousIndex(
   videos: GoogleApiYouTubeVideoResource[],
-  index: string
+  selectedId: string,
+  filter: string
 ): string {
-  const currentIndex: number = videos.findIndex(video => video.id === index);
+  const filteredVideos = filterVideos(videos, filter);
+  const currentIndex: number = filteredVideos.findIndex(
+    video => video.id === selectedId
+  );
   let previousIndex = currentIndex - 1;
-  if (!videos.length || previousIndex < 0) {
+  if (!filteredVideos.length || previousIndex < 0) {
     previousIndex = 0;
   }
 
-  return videos[previousIndex].id || '';
+  return filteredVideos[previousIndex].id || '';
+}
+
+function selectNextOrPreviousTrack(
+  state: INowPlaylist,
+  filter: string
+): INowPlaylist {
+  const videosPlaylist = state.videos;
+  const currentId = state.selectedId;
+  const indexOfCurrentVideo = videosPlaylist.findIndex(
+    video => currentId === video.id
+  );
+  const isCurrentLast = indexOfCurrentVideo + 1 === videosPlaylist.length;
+  const nextId = isCurrentLast
+    ? getNextIdForPlaylist(videosPlaylist, state.repeat, currentId)
+    : selectNextIndex(videosPlaylist, currentId, filter, state.repeat);
+  return Object.assign({}, state, { selectedId: nextId });
+}
+
+function getNextIdForPlaylist(
+  videos: GoogleApiYouTubeVideoResource[],
+  repeat: boolean,
+  currentId: string = ''
+) {
+  let id = '';
+  if (videos.length && repeat) {
+    id = videos[0].id;
+  }
+  return id;
+}
+
+function removeMedia(
+  videos: GoogleApiYouTubeVideoResource[],
+  media: GoogleApiYouTubeVideoResource
+): GoogleApiYouTubeVideoResource[] {
+  return videos.filter(
+    (_media: GoogleApiYouTubeVideoResource) => _media.id !== media.id
+  );
 }

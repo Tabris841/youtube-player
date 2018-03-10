@@ -1,33 +1,42 @@
 import { NgModule } from '@angular/core';
-import { Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule, ActionReducer, MetaReducer } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { localStorageSync } from 'ngrx-store-localstorage';
+// import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 
-import { ActionReducer, Action, combineReducers } from '@ngrx/store';
-import { compose } from '@ngrx/core/compose';
+import { environment } from '@env/environment';
+import { EchoesState, EchoesReducers } from './reducers';
+import { NavigationSerializer } from './router-store';
 
-// reducers
-import { videos, EchoesVideos, YoutubeVideosTypes } from './youtube-videos';
-import { YoutubeMediaPlaylist, nowPlaylist } from './now-playlist';
+// import { storeFreeze } from 'ngrx-store-freeze';
 
-// plugins
-import { localStorageSync } from './ngrx-store-localstorage';
+export { EchoesState } from './reducers';
 
-/**
- * we treat each reducer like a table in a database. This means
- * our top level state interface is just a map of keys to inner state types.
- */
-export interface EchoesState {
-  videos: EchoesVideos;
-  nowPlaylist: YoutubeMediaPlaylist;
+export function localStorageSyncReducer(
+  reducer: ActionReducer<any>
+): ActionReducer<any> {
+  return localStorageSync({
+    keys: Object.keys(EchoesReducers),
+    rehydrate: true
+  })(reducer);
+}
+const metaReducers: MetaReducer<any, any>[] = [localStorageSyncReducer];
+const optionalImports = [];
+if (!environment.production) {
+  // Note that you must instrument after importing StoreModule
+  optionalImports.push(StoreDevtoolsModule.instrument({ maxAge: 25 }));
 }
 
-const reducers = { videos, nowPlaylist };
-
-const composeStore = compose(localStorageSync([], true), combineReducers)({});
-
 @NgModule({
-  imports: [StoreModule.forRoot(reducers)],
+  imports: [
+    StoreModule.forRoot(EchoesReducers, { metaReducers }),
+    // StoreRouterConnectingModule,
+    ...optionalImports
+  ],
   declarations: [],
   exports: [],
-  providers: []
+  providers: [
+    // { provide: RouterStateSerializer, useClass: NavigationSerializer }
+  ]
 })
 export class CoreStoreModule {}

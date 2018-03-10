@@ -1,39 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
-import { CLIENT_ID } from './constants';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class GapiLoader {
   private _api: Observable<any>;
+  private api: Subject<any>;
 
   constructor() {}
 
   load(api: string) {
     return this.createApi(api);
   }
-
   _loadApi(api: string, observer) {
-    const gapiAuthLoaded =
-      window['gapi'] &&
-      window['gapi'].auth2 &&
-      window['gapi'].auth2.getAuthInstance();
+    const gapi = window['gapi'];
+    const gapiAuthLoaded = gapi && gapi.auth2 && gapi.auth2.getAuthInstance();
     if (gapiAuthLoaded && gapiAuthLoaded.currentUser) {
       return observer.next(gapiAuthLoaded);
     }
-    window['gapi'].load(api, response => observer.next(response));
+    gapi.load(api, response => observer.next(response));
   }
 
-  createApi(api) {
-    this._api = new Observable(observer => {
-      const isGapiLoaded = window['gapi'] && window['gapi'].load;
-      const onApiLoaded = () => this._loadApi(api, observer);
-      if (isGapiLoaded) {
-        onApiLoaded();
-      } else {
-        window['apiLoaded'] = onApiLoaded;
-      }
-    });
-    return this._api;
+  createApi(api: string) {
+    const api$ = new Subject();
+    const gapi = window['gapi'];
+    // this._api = new Observable(observer => {
+    const isGapiLoaded = gapi && gapi.load;
+    const onApiLoaded = () => this._loadApi(api, api$);
+    if (isGapiLoaded) {
+      onApiLoaded();
+    } else {
+      window['apiLoaded'] = onApiLoaded;
+    }
+    // });
+    // return this._api;
+    return api$;
   }
 }

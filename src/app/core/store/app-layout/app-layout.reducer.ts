@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { ActionTypes, Action } from './app-layout.actions';
+import { AppLayoutActionTypes, AppLayoutAction } from './app-layout.actions';
 import { Themes, DEFAULT_THEME } from '../../../app.themes';
 
 export interface IAppVersion {
@@ -27,23 +27,26 @@ const initialState: IAppSettings = {
   themes: Themes.sort()
 };
 
-export function appLayout(state: IAppSettings = initialState, action: Action): IAppSettings {
+export function appLayout(
+  state: IAppSettings = initialState,
+  action: AppLayoutAction
+): IAppSettings {
   switch (action.type) {
-    case ActionTypes.SIDEBAR_EXPAND:
+    case AppLayoutActionTypes.SIDEBAR_EXPAND:
       return { ...state, sidebarExpanded: true };
 
-    case ActionTypes.SIDEBAR_COLLAPSE:
+    case AppLayoutActionTypes.SIDEBAR_COLLAPSE:
       return { ...state, sidebarExpanded: false };
 
-    case ActionTypes.SIDEBAR_TOGGLE:
+    case AppLayoutActionTypes.SIDEBAR_TOGGLE:
       return { ...state, sidebarExpanded: !state.sidebarExpanded };
 
-    case ActionTypes.APP_VERSION_RECEIVED: {
+    case AppLayoutActionTypes.APP_VERSION_RECEIVED: {
       const version = getVersion(state, action.payload);
       return { ...state, version };
     }
 
-    case ActionTypes.APP_CHECK_VERSION: {
+    case AppLayoutActionTypes.APP_CHECK_VERSION: {
       const version = {
         ...state.version,
         checkingForVersion: true
@@ -51,7 +54,7 @@ export function appLayout(state: IAppSettings = initialState, action: Action): I
       return { ...state, version };
     }
 
-    case ActionTypes.APP_THEME_CHANGE: {
+    case AppLayoutActionTypes.APP_THEME_CHANGE: {
       return { ...state, theme: action.payload };
     }
 
@@ -73,7 +76,8 @@ function getVersion(state: IAppSettings, packageJson: any): IAppVersion {
     checkingForVersion: false
   };
   const isCurrentVersionEmpty = '' === currentVersion;
-  const isCurrentDifferentFromRemote = !isCurrentVersionEmpty && currentVersion !== remoteVersion;
+  const isCurrentDifferentFromRemote =
+    !isCurrentVersionEmpty && currentVersion !== remoteVersion;
   if (isCurrentVersionEmpty) {
     version.semver = remoteVersion;
   }

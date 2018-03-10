@@ -1,36 +1,35 @@
-import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
+import { CoreModule } from './core';
+import { SharedModule } from '@shared/index';
+
+import { APP_CORE_MODULES } from './core/components';
+import { APP_CONTAINER_MODULES } from './containers';
 import { ROUTES } from './app.routes';
 
-// App is our top level component
 import { AppComponent } from './app.component';
 
-import { CoreModule } from './core';
-import { YoutubeVideosModule } from './youtube-videos';
-import { NowPlayingModule } from './now-playing';
-import { PlayerModule } from './player';
-
-// SERVICES
-import { APP_SERVICES } from './core/services';
-
 @NgModule({
-  bootstrap: [AppComponent],
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
+    HttpClientJsonpModule,
     RouterModule.forRoot(ROUTES, { useHash: true }),
-    CoreModule,
+    BrowserAnimationsModule,
 
-    YoutubeVideosModule,
-    NowPlayingModule,
-    PlayerModule
+    CoreModule,
+    SharedModule,
+    ...APP_CORE_MODULES,
+    ...APP_CONTAINER_MODULES
   ],
-  providers: [...APP_SERVICES]
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

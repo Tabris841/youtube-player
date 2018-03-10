@@ -1,62 +1,166 @@
+import { Subscription } from 'rxjs/Subscription';
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
-import { Store } from '@ngrx/store';
+import { timer } from 'rxjs/observable/timer';
+import { fromPromise } from 'rxjs/observable/fromPromise';
+import {
+  switchMap,
+  tap,
+  filter,
+  map,
+  timeInterval,
+  retry,
+  catchError
+} from 'rxjs/operators';
 
-import { CLIENT_ID } from './constants';
 import { GapiLoader } from './gapi-loader.service';
+import { environment } from '../../../environments/environment';
+
+const extractAccessToken = (_googleAuth: gapi.auth2.GoogleAuth) => {
+  return (
+    _googleAuth && _googleAuth.currentUser.get().getAuthResponse().access_token
+  );
+};
 
 @Injectable()
 export class Authorization {
-  private isSignedIn = false;
-  private _googleAuth: any;
+  private _googleAuth: gapi.auth2.GoogleAuth;
+  private _scope = 'profile email https://www.googleapis.com/auth/youtube';
+  private _accessToken: string;
+  private autoSignInTimer: Subscription;
 
-  constructor(private zone: NgZone, private gapiLoader: GapiLoader) {
-    this.loadAuth();
+  set accessToken(value) {
+    this._accessToken = value;
   }
+  get accessToken() {
+    const token = {
+      fromGoogle: extractAccessToken(this._googleAuth),
+      fromApp: this._accessToken,
+      equal: true
+    };
+    window['__token__'] = token;
+    token.equal = token.fromGoogle === token.fromApp;
+    return token.equal ? token.fromApp : token.fromGoogle;
+  }
+
+  constructor(private zone: NgZone, private gapiLoader: GapiLoader) {}
 
   loadAuth() {
     // attempt to SILENT authorize
-    this.gapiLoader.load('auth2').subscribe(authInstance => {
-      if (authInstance && authInstance.currentUser) {
-        return (this._googleAuth = authInstance);
-      }
-      this.authorize().then(GoogleAuth => {
-        const isSignedIn = GoogleAuth.isSignedIn.get();
-        this._googleAuth = GoogleAuth;
-        if (isSignedIn) {
-          this.signIn();
-        }
-      });
-    });
+    return this.gapiLoader
+      .load('auth2')
+      .pipe(
+        switchMap(() => this.authorize()),
+        tap((googleAuth: gapi.auth2.GoogleAuth) =>
+          this.saveGoogleAuth(googleAuth)
+        ),
+        tap((googleAuth: gapi.auth2.GoogleAuth) =>
+          this.listenToGoogleAuthSignIn(googleAuth)
+        ),
+        filter((googleAuth: gapi.auth2.GoogleAuth) => this.isSignIn()),
+        filter((googleAuth: gapi.auth2.GoogleAuth) =>
+          this.hasAccessToken(googleAuth)
+        ),
+        map((googleAuth: gapi.auth2.GoogleAuth) => googleAuth.currentUser.get())
+      );
   }
 
   authorize() {
+    if (this._googleAuth) {
+      console.log('signedIn?', this._googleAuth.isSignedIn.get());
+    }
     const authOptions = {
-      client_id: `${CLIENT_ID}.apps.googleusercontent.com`
+      client_id: environment.youtube.CLIENT_ID,
+      scope: this._scope
     };
-    return window['gapi'].auth2.init(authOptions);
+    return fromPromise(window['gapi'].auth2.init(authOptions));
+  }
+
+  private hasAccessToken(googleAuth: gapi.auth2.GoogleAuth): boolean {
+    return (
+      googleAuth &&
+      googleAuth.currentUser
+        .get()
+        .getAuthResponse()
+        .hasOwnProperty('access_token')
+    );
+  }
+
+  private saveGoogleAuth(
+    googleAuth: gapi.auth2.GoogleAuth
+  ): gapi.auth2.GoogleAuth {
+    this._googleAuth = googleAuth;
+    return googleAuth;
+  }
+
+  private listenToGoogleAuthSignIn(googleAuth: gapi.auth2.GoogleAuth) {
+    window['gapi']['auth2'].getAuthInstance().isSignedIn.listen(authState => {
+      console.log('authState changed', authState);
+    });
   }
 
   signIn() {
-    const run = fn => r => this.zone.run(() => fn.call(this, r));
-    const scope = 'profile email https://www.googleapis.com/auth/youtube';
-    const signOptions = { scope };
+    const signOptions: gapi.auth2.SigninOptions = { scope: this._scope };
     if (this._googleAuth) {
-      this._googleAuth.signIn(signOptions).then(run(this.onLoginSuccess), run(this.onLoginFailed));
+      return fromPromise(this._googleAuth.signIn(signOptions));
     }
+    return new Observable(obs => obs.complete());
   }
 
-  onLoginSuccess(response) {
-    const token = response.getAuthResponse().access_token;
-    this.isSignedIn = true;
+  extractToken(googleUser: gapi.auth2.GoogleUser) {
+    const authResponse = googleUser.getAuthResponse();
+    return authResponse.access_token;
   }
 
-  onLoginFailed(response) {
-    console.log('FAILED TO LOGIN:', response);
+  setAuthTimer(googleUser: gapi.auth2.GoogleUser) {
+    const MILLISECOND = 1000;
+    const expireTime = 60 * 5;
+    const expireTimeInMs = expireTime * MILLISECOND;
+    this.disposeAutoSignIn();
+    this.autoSignInTimer = this.startTimerToNextAuth(expireTimeInMs);
+  }
+
+  startTimerToNextAuth(timeInMs: number): Subscription {
+    return timer(timeInMs)
+      .pipe(
+        timeInterval(),
+        switchMap(() => this.authorize()),
+        tap((googleAuth: gapi.auth2.GoogleAuth) =>
+          this.saveGoogleAuth(googleAuth)
+        ),
+        map((googleAuth: gapi.auth2.GoogleAuth) =>
+          googleAuth.currentUser.get()
+        ),
+        retry(3),
+        catchError(error => {
+          window.location.reload();
+          return error;
+        })
+      )
+      .subscribe((googleUser: gapi.auth2.GoogleUser) => {
+        this.zone.run(() => this.setAuthTimer(googleUser));
+      });
+  }
+
+  handleFailedLogin(response) {
+    console.error('FAILED TO LOGIN:', response);
+    return new Observable(obs => {
+      obs.error();
+      obs.complete();
+    });
   }
 
   isSignIn() {
-    return this.isSignedIn;
+    return this._googleAuth && this._googleAuth.isSignedIn.get();
+  }
+
+  signOut() {
+    return fromPromise(this._googleAuth.signOut());
+  }
+
+  disposeAutoSignIn() {
+    if (this.autoSignInTimer) {
+      this.autoSignInTimer.unsubscribe();
+    }
   }
 }

@@ -1,42 +1,40 @@
-import {
-  Http,
-  URLSearchParams,
-  Response,
-  RequestOptionsArgs,
-  Headers
-} from '@angular/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
 
-import { YOUTUBE_API_KEY, CLIENT_ID } from './constants';
+import { Authorization } from './authorization.service';
+import { environment } from '../../../environments/environment';
 
 interface YoutubeApiServiceOptions {
   url?: string;
-  http?: Http;
+  http?: HttpClient;
   idKey?: string;
+  authService?: Authorization;
   config?: any;
+  authorize?: boolean;
 }
 
-@Injectable()
-export class YoutubeApiFactory {
-  create(): YoutubeApiService {
-    return new YoutubeApiService();
-  }
-}
+const defaultParams = {
+  part: 'snippet,contentDetails',
+  key: environment.youtube.API_KEY,
+  maxResults: '50',
+  pageToken: ''
+};
 
+// @Injectable()
 export class YoutubeApiService {
   url: string;
-  http: Http;
+  http: HttpClient;
   idKey: string;
-  isSearching: Boolean = false;
-  config: URLSearchParams = new URLSearchParams();
+  authorize = false;
+  isSearching = false;
+  params: HttpParams;
   nextPageToken: string;
-  private accessToken: string;
 
-  constructor() {}
-
-  setOptions(options: YoutubeApiServiceOptions) {
+  constructor(options: any, private authService?: Authorization) {
     this.resetConfig();
+    if (authService) {
+      this.authorize = true;
+    }
     if (options) {
       this.url = options.url;
       this.http = options.http;
@@ -47,66 +45,74 @@ export class YoutubeApiService {
     }
   }
 
-  setConfig(config) {
-    Object.keys(config).forEach(option => {
-      this.config.set(option, config[option]);
-    });
-  }
-
-  setToken(token: string) {
-    this.accessToken = token;
+  setConfig(options) {
+    this.params = Object.keys(options).reduce((params, option) => {
+      return params.set(option, options[option]);
+    }, this.params);
   }
 
   hasToken(): boolean {
-    return this.accessToken.length > 0;
+    return this.authService && this.authService.accessToken.length > 0;
   }
 
   resetConfig() {
-    this.config.set('part', 'snippet,contentDetails');
-    this.config.set('key', YOUTUBE_API_KEY);
-    this.config.set('maxResults', '50');
-    this.config.set('pageToken', '');
+    this.params = new HttpParams({ fromObject: defaultParams });
   }
 
   getList() {
-    const accessToken = this.accessToken;
     this.isSearching = true;
-    const options: RequestOptionsArgs = {
-      search: this.config,
-      headers: accessToken
-        ? new Headers({ Authorization: `Bearer ${accessToken}` })
-        : new Headers()
+    const options = {
+      params: this.params,
+      headers: this.createHeaders()
     };
     return this.http.get(this.url, options);
   }
 
-  list(id, token?) {
+  list(id) {
     if (this.idKey) {
-      this.config.set(this.idKey, id);
+      this.setConfig({ [this.idKey]: id });
+      // this.params[this.idKey] = id;
     }
 
     this.isSearching = true;
-    const options: RequestOptionsArgs = {
-      search: this.config,
-      headers: token
-        ? new Headers({ Authorization: `Bearer ${token}` })
-        : new Headers()
+    const options = {
+      params: this.params,
+      headers: this.createHeaders()
     };
-    return this.http.get(this.url, options).map(response => {
-      this.nextPageToken = response.json().nextPageToken;
+    return this.http.get(this.url, options).map((response: any) => {
+      this.nextPageToken = response.nextPageToken;
       this.isSearching = false;
       return response;
     });
   }
 
-  setNextPageToken() {
+  fetchNextPage() {
     if (!this.isSearching) {
-      this.config.set('pageToken', this.nextPageToken);
+      // this.params['pageToken'] = this.nextPageToken;
+      this.setPageToken(this.nextPageToken);
     }
-    return this.nextPageToken;
   }
 
   resetPageToken() {
-    this.config.set('pageToken', '');
+    // this.params['pageToken'] = '';
+    this.setPageToken('');
+  }
+
+  setPageToken(pageToken) {
+    this.setConfig({ pageToken });
+  }
+
+  deletePageToken() {
+    this.params = this.params.delete('pageToken');
+    console.log('remove pageToken', this.params.toString());
+  }
+
+  createHeaders() {
+    const accessToken = this.authService && this.authService.accessToken;
+    const headers = {};
+    if (accessToken && this.authorize) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return headers;
   }
 }

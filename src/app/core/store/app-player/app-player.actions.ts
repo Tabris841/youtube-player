@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-export class ActionTypes {
+export class AppPlayerActionTypes {
   static PLAY = '[Player] PLAY';
   static PAUSE = '[Player] PAUSE';
   static SETUP_PLAYER = '[Player] SETUP_PLAYER';
@@ -17,62 +17,69 @@ export class ActionTypes {
 }
 
 export class PlayVideo implements Action {
-  readonly type = ActionTypes.PLAY;
+  readonly type = AppPlayerActionTypes.PLAY;
+
   constructor(public payload: GoogleApiYouTubeVideoResource) {}
 }
 
 export class PauseVideo implements Action {
-  readonly type = ActionTypes.PAUSE;
+  readonly type = AppPlayerActionTypes.PAUSE;
   constructor(public payload = '') {}
 }
 
 export class TogglePlayer implements Action {
-  readonly type = ActionTypes.TOGGLE_PLAYER;
+  readonly type = AppPlayerActionTypes.TOGGLE_PLAYER;
+
   constructor(public payload: boolean = true) {}
 }
 
 export class LoadNextTrack implements Action {
-  readonly type = ActionTypes.LOAD_NEXT_TRACK;
+  readonly type = AppPlayerActionTypes.LOAD_NEXT_TRACK;
 }
 
 export class LoadAndPlay implements Action {
-  readonly type = ActionTypes.LOAD_AND_PLAY;
+  readonly type = AppPlayerActionTypes.LOAD_AND_PLAY;
+
   constructor(public payload: GoogleApiYouTubeVideoResource) {}
 }
 
 export class PlayStarted implements Action {
-  readonly type = ActionTypes.PLAY_STARTED;
+  readonly type = AppPlayerActionTypes.PLAY_STARTED;
+
   constructor(public payload: GoogleApiYouTubeVideoResource) {}
 }
 
 export class UpdateState implements Action {
-  readonly type = ActionTypes.UPDATE_STATE;
+  readonly type = AppPlayerActionTypes.UPDATE_STATE;
+
   constructor(public payload: number) {}
 }
 
 export class FullScreen implements Action {
-  readonly type = ActionTypes.FULLSCREEN;
+  readonly type = AppPlayerActionTypes.FULLSCREEN;
 }
 
 export class ResetFullScreen implements Action {
-  readonly type = ActionTypes.RESET_FULLSCREEN;
+  readonly type = AppPlayerActionTypes.RESET_FULLSCREEN;
 }
 
 export class Reset implements Action {
-  readonly type = ActionTypes.RESET;
+  readonly type = AppPlayerActionTypes.RESET;
 }
 
 export class SetupPlayer implements Action {
-  readonly type = ActionTypes.SETUP_PLAYER;
+  readonly type = AppPlayerActionTypes.SETUP_PLAYER;
+
   constructor(public payload: any) {}
 }
 
 export class PlayerStateChange implements Action {
-  readonly type = ActionTypes.PLAYER_STATE_CHANGE;
+  readonly type = AppPlayerActionTypes.PLAYER_STATE_CHANGE;
+
   constructor(public payload: YT.OnStateChangeEvent) {}
 }
 
-export type Actions =
+export type AppPlayerActions =
   | PlayVideo
   | TogglePlayer
   | LoadNextTrack

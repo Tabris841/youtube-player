@@ -1,31 +1,16 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { CORE_COMPONENTS } from './components';
-import { PIPES } from './pipes';
 
 import { CoreStoreModule } from './store';
 import { AppEffectsModules } from './effects';
 
+import { APP_SERVICES } from './services';
+import { APP_RESOLVERS } from './resolvers';
+import { APP_APIS } from './api';
+
 @NgModule({
-  imports: [
-    InfiniteScrollModule,
-    CommonModule,
-    FormsModule,
-    CoreStoreModule,
-    AppEffectsModules
-  ],
-  declarations: [...CORE_COMPONENTS, ...PIPES],
-  exports: [
-    InfiniteScrollModule,
-    ...CORE_COMPONENTS,
-    CommonModule,
-    FormsModule,
-    CoreStoreModule,
-    ...PIPES
-  ],
-  providers: []
+  imports: [CoreStoreModule, AppEffectsModules],
+  declarations: [],
+  exports: [CoreStoreModule],
+  providers: [...APP_SERVICES, ...APP_RESOLVERS, ...APP_APIS]
 })
 export class CoreModule {}

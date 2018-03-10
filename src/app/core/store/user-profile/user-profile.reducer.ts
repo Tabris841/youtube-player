@@ -1,7 +1,10 @@
 import { Observable } from 'rxjs/Observable';
 import { Action } from '@ngrx/store';
 
-import { ActionsTypes, Actions } from './user-profile.actions';
+import {
+  UserProfileActionsTypes,
+  UserProfileActions
+} from './user-profile.actions';
 import { EchoesState } from '../';
 
 export interface IUserProfile {
@@ -27,27 +30,30 @@ const initialUserState: IUserProfile = {
   viewedPlaylist: ''
 };
 
-export function user(state = initialUserState, action: Actions): IUserProfile {
+export function user(
+  state = initialUserState,
+  action: UserProfileActions
+): IUserProfile {
   switch (action.type) {
-    case ActionsTypes.ADD_PLAYLISTS:
+    case UserProfileActionsTypes.ADD_PLAYLISTS:
       return { ...state, playlists: [...state.playlists, ...action.payload] };
 
-    case ActionsTypes.UPDATE_TOKEN:
+    case UserProfileActionsTypes.UPDATE_TOKEN:
       return { ...state, access_token: action.payload, playlists: [] };
 
-    case ActionsTypes.USER_SIGNOUT_SUCCESS:
+    case UserProfileActionsTypes.USER_SIGNOUT_SUCCESS:
       return { ...initialUserState };
 
-    case ActionsTypes.UPDATE:
+    case UserProfileActionsTypes.UPDATE:
       return { ...state, data: action.payload };
 
-    case ActionsTypes.UPDATE_NEXT_PAGE_TOKEN:
+    case UserProfileActionsTypes.UPDATE_NEXT_PAGE_TOKEN:
       return { ...state, nextPageToken: action.payload };
 
-    case ActionsTypes.UPDATE_USER_PROFILE:
+    case UserProfileActionsTypes.UPDATE_USER_PROFILE:
       return { ...state, profile: action.payload };
 
-    case ActionsTypes.VIEWED_PLAYLIST:
+    case UserProfileActionsTypes.VIEWED_PLAYLIST:
       return { ...state, viewedPlaylist: action.payload };
 
     default:

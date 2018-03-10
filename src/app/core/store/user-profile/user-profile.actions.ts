@@ -2,7 +2,7 @@ import { Action } from '@ngrx/store';
 
 import { GoogleBasicProfile } from './user-profile.reducer';
 
-export enum ActionsTypes {
+export enum UserProfileActionsTypes {
   UPDATE = '[UserProfile] UPDATE',
   ADD_PLAYLISTS = '[UserProfile] ADD_PLAYLISTS',
   UPDATE_TOKEN = '[UserProfile] UPDATE_TOKEN',
@@ -19,73 +19,73 @@ export enum ActionsTypes {
 }
 
 export class SetViewPlaylist implements Action {
-  readonly type = ActionsTypes.VIEWED_PLAYLIST;
+  readonly type = UserProfileActionsTypes.VIEWED_PLAYLIST;
 
   constructor(public payload: string) {}
 }
 
 export class UpdateData implements Action {
-  readonly type = ActionsTypes.UPDATE;
+  readonly type = UserProfileActionsTypes.UPDATE;
 
   constructor(public payload: any) {}
 }
 
 export class AddPlaylists implements Action {
-  readonly type = ActionsTypes.ADD_PLAYLISTS;
+  readonly type = UserProfileActionsTypes.ADD_PLAYLISTS;
 
   constructor(public payload: Array<any>) {}
 }
 
 export class UpdateToken implements Action {
-  readonly type = ActionsTypes.UPDATE_TOKEN;
+  readonly type = UserProfileActionsTypes.UPDATE_TOKEN;
 
   constructor(public payload: string) {}
 }
 
 export class UpdatePageToken implements Action {
-  readonly type = ActionsTypes.UPDATE_NEXT_PAGE_TOKEN;
+  readonly type = UserProfileActionsTypes.UPDATE_NEXT_PAGE_TOKEN;
 
   constructor(public payload: string) {}
 }
 
 export class UserProfileCompleted implements Action {
-  readonly type = ActionsTypes.USER_PROFILE_COMPLETED;
+  readonly type = UserProfileActionsTypes.USER_PROFILE_COMPLETED;
 }
 
 export class UserProfileRecieved implements Action {
-  readonly type = ActionsTypes.USER_PROFILE_RECIEVED;
+  readonly type = UserProfileActionsTypes.USER_PROFILE_RECIEVED;
 
   constructor(public payload: any) {}
 }
 
 export class UpdateUserProfile implements Action {
-  readonly type = ActionsTypes.UPDATE_USER_PROFILE;
+  readonly type = UserProfileActionsTypes.UPDATE_USER_PROFILE;
 
   constructor(public payload: GoogleBasicProfile) {}
 }
 
 export class UserSignin implements Action {
-  readonly type = ActionsTypes.USER_SIGNIN;
+  readonly type = UserProfileActionsTypes.USER_SIGNIN;
 }
 
 export class UserSigninStart implements Action {
-  readonly type = ActionsTypes.USER_SIGNIN_START;
+  readonly type = UserProfileActionsTypes.USER_SIGNIN_START;
 }
 
 export class UserSigninSuccess implements Action {
-  readonly type = ActionsTypes.USER_SIGNIN_SUCCESS;
+  readonly type = UserProfileActionsTypes.USER_SIGNIN_SUCCESS;
   constructor(public payload: gapi.auth2.GoogleUser) {}
 }
 
 export class UserSignout implements Action {
-  readonly type = ActionsTypes.USER_SIGNOUT;
+  readonly type = UserProfileActionsTypes.USER_SIGNOUT;
 }
 
 export class UserSignoutSuccess implements Action {
-  readonly type = ActionsTypes.USER_SIGNOUT_SUCCESS;
+  readonly type = UserProfileActionsTypes.USER_SIGNOUT_SUCCESS;
 }
 
-export type Actions =
+export type UserProfileActions =
   | SetViewPlaylist
   | UpdateData
   | AddPlaylists

@@ -1,44 +1,63 @@
-import { Http, URLSearchParams, Response } from '@angular/http';
 import { Injectable, NgZone } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
+import { take, switchMap } from 'rxjs/operators';
 
-import { YoutubeApiFactory, YoutubeApiService } from './youtube-api.service';
+import { YoutubeApiService } from './youtube-api.service';
 import { YoutubeVideosInfo } from './youtube-videos-info.service';
+import { Authorization } from './authorization.service';
+import { GoogleBasicProfile } from '../store/user-profile';
 
 @Injectable()
 export class UserProfile {
   isSearching: Boolean = false;
   public playlistInfo: YoutubeApiService;
   public playlists: YoutubeApiService;
+  public playlistApi: YoutubeApiService;
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private zone: NgZone,
     private youtubeVideosInfo: YoutubeVideosInfo,
-    private apiFactory: YoutubeApiFactory
+    private authorization: Authorization
   ) {
-    this.playlistInfo = apiFactory.create();
-    this.playlistInfo.setOptions({
-      url: 'https://www.googleapis.com/youtube/v3/playlistItems',
-      http: this.http,
-      idKey: 'playlistId'
-    });
+    this.playlistInfo = new YoutubeApiService(
+      {
+        url: 'https://www.googleapis.com/youtube/v3/playlistItems',
+        http: this.http,
+        idKey: 'playlistId',
+        config: {
+          mine: 'true'
+        }
+      },
+      authorization
+    );
     // TODO - extract to a Model / Reducer?
     // Reducer - because nextPageToken is changed
     // Model - new _config should be recreated easily with a new nextPageToken
-    this.playlists = apiFactory.create();
-    this.playlists.setOptions({
-      url: 'https://www.googleapis.com/youtube/v3/playlists',
-      http: this.http,
-      config: {
-        mine: 'true',
-        part: 'snippet,id,contentDetails'
-      }
-    });
-  }
-
-  setAccessToken(token: string) {
-    // TODO - extract to a reducer
-    return this.playlists.setToken(token);
+    this.playlists = new YoutubeApiService(
+      {
+        url: 'https://www.googleapis.com/youtube/v3/playlists',
+        http: this.http,
+        config: {
+          mine: 'true',
+          part: 'snippet,id,contentDetails'
+        }
+      },
+      authorization
+    );
+    this.playlistApi = new YoutubeApiService(
+      {
+        url: 'https://www.googleapis.com/youtube/v3/playlists',
+        http: this.http,
+        idKey: 'id',
+        config: {
+          part: 'snippet,id,contentDetails'
+        }
+      },
+      authorization
+    );
   }
 
   getPlaylists(isNewPage: boolean) {
@@ -55,28 +74,78 @@ export class UserProfile {
   }
 
   updatePageToken(pageToken: string) {
-    this.playlists.config.set('pageToken', pageToken);
+    this.playlists.setPageToken(pageToken);
   }
 
   resetPageToken() {
-    this.playlists.config.set('pageToken', '');
+    this.playlists.resetPageToken();
   }
 
-  fetchPlaylistItems(playlistId: string) {
-    const token = this.playlists.config.get('access_token');
-    return this.playlistInfo.list(playlistId, token).map(response => {
-      debugger;
-      const videoIds = response
-        .json()
-        .items.map(video => video.snippet.resourceId.videoId)
+  fetchPlaylist(playlistId: string) {
+    return this.playlistApi.list(playlistId);
+  }
+
+  fetchPlaylistItems(playlistId: string, pageToken = '') {
+    // const token = this.playlists.config.get('access_token');
+    if ('' === pageToken) {
+      this.playlistInfo.deletePageToken();
+    } else {
+      this.playlistInfo.setPageToken(pageToken);
+    }
+    return this.playlistInfo.list(playlistId).switchMap((response: any) => {
+      const videoIds = response.items
+        .map(video => video.snippet.resourceId.videoId)
         .join(',');
-      return this.youtubeVideosInfo.fetchVideoData(videoIds);
+      return this.youtubeVideosInfo.api.list(videoIds);
     });
   }
 
-  isTokenValid(token) {
-    const accessToken = this.playlists.config.get('access_token');
-    // TODO - should check if the current accessToken is still valid - google api
-    return accessToken === token;
+  fetchAllPlaylistItems(playlistId: string) {
+    let items = [];
+    const subscriptions: Subscription[] = [];
+    const items$ = new Subject();
+    let nextPageToken = '';
+    const fetchMetadata = response => {
+      const videoIds = response.items
+        .map(video => video.snippet.resourceId.videoId)
+        .join(',');
+      nextPageToken = response.nextPageToken;
+      return this.youtubeVideosInfo.api.list(videoIds);
+    };
+    const collectItems = videos => {
+      items = [...items, ...videos.items];
+      if (nextPageToken) {
+        fetchItems(playlistId, nextPageToken);
+      } else {
+        items$.next(items);
+        subscriptions.forEach(_s => _s.unsubscribe());
+        items$.complete();
+      }
+    };
+    const fetchItems = (id, token) => {
+      this.playlistInfo.setPageToken(token);
+      const sub = this.playlistInfo
+        .list(id)
+        .pipe(switchMap(response => fetchMetadata(response)))
+        .subscribe(response => collectItems(response));
+      subscriptions.push(sub);
+      return sub;
+    };
+    fetchItems(playlistId, '');
+    return items$.pipe(take(1));
+  }
+
+  toUserJson(profile): GoogleBasicProfile {
+    const _profile: GoogleBasicProfile = {};
+    if (profile) {
+      _profile.imageUrl = profile.getImageUrl();
+      _profile.name = profile.getName();
+    }
+    return _profile;
+  }
+
+  fetchMetadata(items: GoogleApiYouTubeVideoResource[]) {
+    const videoIds = items.map(video => video.id).join(',');
+    return this.youtubeVideosInfo.api.list(videoIds);
   }
 }

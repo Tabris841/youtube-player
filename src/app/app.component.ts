@@ -1,43 +1,28 @@
-import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import {
-  YoutubeSearch,
-  YoutubePlayerService,
-  NowPlaylistService
-} from './core/services';
-import { EchoesState } from './core/store';
-import { PlayerService } from './core/services/player.service';
+import { VersionCheckerService } from './core/services/version-checker.service';
+import { Component, HostBinding, OnInit } from '@angular/core';
+import { EchoesState } from '@store/reducers';
+import { getSidebarCollapsed, getAppTheme } from '@store/app-layout';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-body',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  sidebarCollapsed$ = this.store.select(getSidebarCollapsed);
+  theme$ = this.store.select(getAppTheme);
+
+  @HostBinding('class') style = 'arctic';
+
   constructor(
-    public youtubeSearch: YoutubeSearch,
-    public playerService: PlayerService,
-    public nowPlaylistService: NowPlaylistService,
-    public store: Store<EchoesState>
-  ) {}
-
-  selectVideo(media: GoogleApiYouTubeVideoResource) {
-    this.nowPlaylistService.updateIndexByMedia(media.id);
+    private store: Store<EchoesState>,
+    private versionCheckerService: VersionCheckerService
+  ) {
+    versionCheckerService.start();
   }
 
-  handleVideoEnded(state) {
-    if (!this.isLastIndex()) {
-      this.playNextVideo(state);
-    }
+  ngOnInit() {
+    this.theme$.subscribe(theme => (this.style = theme));
   }
-
-  playNextVideo(player) {
-    this.nowPlaylistService.selectNextIndex();
-    // this.playerService.playVideo(this.nowPlaylistService.getCurrent());
-  }
-
-  sortVideo(media: GoogleApiYouTubeSearchResource) {}
-
-  isLastIndex() {}
 }

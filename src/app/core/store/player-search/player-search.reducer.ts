@@ -5,7 +5,7 @@ import {
 } from './player-search.interfaces';
 
 import {
-  PlayerSearchTypes,
+  PlayerSearchActionTypes,
   PlayerSearchActions
 } from './player-search.actions';
 export * from './player-search.interfaces';
@@ -36,22 +36,22 @@ export function search(
   action: PlayerSearchActions
 ): IPlayerSearch {
   switch (action.type) {
-    case PlayerSearchTypes.UPDATE_QUERY: {
+    case PlayerSearchActionTypes.UPDATE_QUERY: {
       return { ...state, query: action.payload };
     }
 
-    case PlayerSearchTypes.SEARCH_NEW_QUERY:
+    case PlayerSearchActionTypes.SEARCH_NEW_QUERY:
       return {
         ...state,
         query: action.payload,
         isSearching: true
       };
 
-    case PlayerSearchTypes.UPDATE_QUERY_PARAM:
+    case PlayerSearchActionTypes.UPDATE_QUERY_PARAM:
       const queryParams = { ...state.queryParams, ...action.payload };
       return { ...state, queryParams };
 
-    case PlayerSearchTypes.SEARCH_RESULTS_RETURNED:
+    case PlayerSearchActionTypes.SEARCH_RESULTS_RETURNED:
       const { nextPageToken, prevPageToken } = action.payload;
       const statePageToken = state.pageToken;
       const pageToken = {
@@ -60,26 +60,26 @@ export function search(
       };
       return { ...state, pageToken };
 
-    case PlayerSearchTypes.SEARCH_STARTED:
+    case PlayerSearchActionTypes.SEARCH_STARTED:
       return { ...state, isSearching: true };
 
-    case PlayerSearchTypes.ADD_RESULTS:
+    case PlayerSearchActionTypes.ADD_RESULTS:
       return {
         ...state,
         results: [...state.results, ...action.payload],
         isSearching: false
       };
 
-    case PlayerSearchTypes.RESET_RESULTS:
+    case PlayerSearchActionTypes.RESET_RESULTS:
       return { ...state, results: [] };
 
-    case PlayerSearchTypes.SEARCH_TYPE_UPDATE: {
+    case PlayerSearchActionTypes.SEARCH_TYPE_UPDATE: {
       return {
         ...state,
         searchType: action.payload
       };
     }
-    case PlayerSearchTypes.PLAYLISTS_SEARCH_START: {
+    case PlayerSearchActionTypes.PLAYLISTS_SEARCH_START: {
       return { ...state, isSearching: true };
     }
 
