@@ -3,37 +3,22 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
   HostListener
 } from '@angular/core';
 
 @Component({
   selector: 'app-media-info',
-  styleUrls: ['./media-info.scss'],
-  template: `
-  <article class="media-info ellipsis">
-    <h3 class="yt-media-title ellipsis">
-      <aside class="media-thumb-container pull-left"
-        title="maximize / minimize"
-        (click)="handleThumbClick()">
-        <img class="media-thumb" src="{{ player?.media?.snippet?.thumbnails?.default?.url }}">
-        <icon name="arrows-alt" [class.invisible]="_minimized"></icon>
-      </aside>
-      <a class="title">{{ player?.media?.snippet?.title }}</a>
-    </h3>
-  </article>
-  `,
+  styleUrls: ['./media-info.component.scss'],
+  templateUrl: './media-info.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MediaInfoComponent implements OnInit {
+export class MediaInfoComponent {
   @Input() player: any = {};
   @Input() minimized: GoogleApiYouTubeVideoResource;
   @Output() thumbClick = new EventEmitter();
 
   constructor() {}
-
-  ngOnInit() {}
 
   @HostListener('window:keyup.Escape', ['$event'])
   keyEvent(event: KeyboardEvent) {

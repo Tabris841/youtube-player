@@ -1,61 +1,22 @@
-import { NowPlaylistEffects } from '@core/effects/now-playlist.effects';
-import * as AppPlayer from '@store/app-player';
-import * as NowPlaylist from '@store/now-playlist/now-playlist.selectors';
-import { EchoesState } from '@store/reducers';
-import { Store } from '@ngrx/store';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   HostBinding,
-  HostListener,
-  Input,
-  OnInit,
-  Output
+  OnInit
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/take';
+import { Store } from '@ngrx/store';
 
+import { EchoesState } from '@store/reducers';
+import { NowPlaylistEffects } from '@core/effects/now-playlist.effects';
+import * as AppPlayer from '@store/app-player';
+import * as NowPlaylist from '@store/now-playlist/now-playlist.selectors';
 import { NowPlaylistService } from '@core/services';
 import { AppPlayerApi } from '@api/app-player.api';
 
 @Component({
   selector: 'app-player',
-  styleUrls: ['./app-player.scss'],
-  template: `
-  <section
-    [class.show-youtube-player]="isShowPlayer$ | async"
-    [class.fullscreen]="(isPlayerFullscreen$ | async).on">
-    <div class="yt-player ux-maker">
-      <app-player-resizer
-        (toggle)="togglePlayer()"
-        [fullScreen]="isShowPlayer$ | async"
-      ></app-player-resizer>
-      <youtube-player class="nicer-ux"
-        (ready)="setupPlayer($event)"
-        (change)="updatePlayerState($event)"
-      ></youtube-player>
-    </div>
-    <div class="container">
-      <app-image-blur [media]="media$ | async" *ngIf="!(isPlayerFullscreen$ | async).on"></app-image-blur>
-      <app-media-info
-        [player]="player$ | async"
-        [minimized]="media$ | async"
-        (thumbClick)="toggleFullScreen()"
-      ></app-media-info>
-      <app-player-controls class="controls-container nicer-ux"
-        [isRepeat]="isPlayerInRepeat$ | async"
-        [playing]="isPlayerPlaying$ | async"
-        [media]="media$ | async"
-        (pause)="pauseVideo()"
-        (next)="playNextTrack()"
-        (play)="playVideo($event)"
-        (previous)="playPreviousTrack()"
-        (repeat)="toggleRepeat()"
-      ></app-player-controls>
-    </div>
-  </section>
-  `,
+  styleUrls: ['./app-player.component.scss'],
+  templateUrl: './app-player.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppPlayerComponent implements OnInit {

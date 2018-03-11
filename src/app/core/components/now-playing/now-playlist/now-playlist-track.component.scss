@@ -19,7 +19,7 @@
       text-shadow: none;
       padding: 1.5rem;
       border-bottom: 1px solid var(--sidebar-bg-secondary);
-      
+
       .track-contents {
         display: flex;
         flex-direction: row;
@@ -28,9 +28,9 @@
       .active & {
         // background: var(--track-bg-active-color);
         color: var(--text-color);
-				box-shadow: inset 0px 0px 6px var(--track-bg-active-color);
-				border-right: 6px solid var(--track-active-border-color);
-				background: var(--track-bg-active-color);
+        box-shadow: inset 0px 0px 6px var(--track-bg-active-color);
+        border-right: 6px solid var(--track-active-border-color);
+        background: var(--track-bg-active-color);
       }
     }
 
@@ -38,7 +38,7 @@
       position: absolute;
       left: 1.5rem;
       padding: 0.5rem;
-      background-color: rgba(0,0,0,.9);
+      background-color: rgba(0, 0, 0, 0.9);
       font-size: 1rem;
       font-weight: bold;
     }
@@ -53,7 +53,7 @@
       max-height: 400px;
       overflow: auto;
     }
-  
+
     .playlist-track {
       font-size: $playlist-font-size;
       display: inline-block;
@@ -89,7 +89,7 @@
       // display: block;
       z-index: $track-button;
       font-size: $remove-font-size;
-      transform: translatex(-1rem);      
+      transform: translatex(-1rem);
     }
     // .now-playlist-track__trigger {
     // a {
@@ -155,7 +155,6 @@
       }
     }
     .track-tracks {
-
       .btn {
         font-size: 1.5rem;
       }

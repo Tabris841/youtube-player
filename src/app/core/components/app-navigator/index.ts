@@ -6,18 +6,9 @@ import { SharedModule } from '@shared/index';
 import { AppNavigatorComponent } from './app-navigator.component';
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule
-  ],
-  declarations: [
-    AppNavigatorComponent
-  ],
-  exports: [
-    AppNavigatorComponent
-  ],
+  imports: [SharedModule, RouterModule],
+  declarations: [AppNavigatorComponent],
+  exports: [AppNavigatorComponent],
   providers: []
 })
-export class AppNavigatorModule { }
-
-// export * from './navigator.component';
+export class AppNavigatorModule {}

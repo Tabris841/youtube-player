@@ -2,25 +2,14 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
   HostBinding
 } from '@angular/core';
 
 @Component({
   selector: 'app-player-controls',
-  styleUrls: ['./player-controls.scss'],
-  template: `
-  <div class="btn-group player-controls">
-    <button *ngFor="let control of controls"
-      [title]="control.title"
-      class="btn btn-default btn-lg navbar-btn"
-      [ngClass]="[control.feature]"
-      (click)="handleControl(control)">
-      <icon [name]="control.icon"></icon>
-    </button>
-  </div>
-  `
+  styleUrls: ['./player-controls.component.scss'],
+  templateUrl: './player-controls.component.html'
 })
 export class PlayerControlsComponent {
   @Input() media: GoogleApiYouTubeVideoResource;

@@ -15,25 +15,8 @@ import { NowPlaylistComponent } from './now-playlist';
 
 @Component({
   selector: 'app-now-playing',
-  styleUrls: ['./now-playing.scss'],
-  template: `
-  <div class="sidebar-pane">
-    <app-now-playlist-filter
-      [playlist]="nowPlaylist$ | async"
-      (clear)="clearPlaylist()"
-      (filter)="updateFilter($event)"
-      (reset)="resetFilter()"
-      (headerClick)="onHeaderClick()"
-    ></app-now-playlist-filter>
-    <app-now-playlist
-      [playlist]="nowPlaylist$ | async"
-      (select)="selectVideo($event)"
-      (selectTrack)="selectTrackInVideo($event)"
-      (remove)="removeVideo($event)"
-    ></app-now-playlist>
-  </div>
-  `,
-  // (sort)="sortVideo($event)"
+  styleUrls: ['./now-playing.component.scss'],
+  templateUrl: './now-playing.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NowPlayingComponent implements OnInit {

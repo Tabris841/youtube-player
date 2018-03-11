@@ -1,0 +1,6 @@
+<div class="list-group" [class.closed]="closed">
+  <button class="list-group-item ux-maker" *ngFor="let route of routes;" (click)="go(route.link)">
+    <icon [name]="route.icon"></icon>
+    <span class="text">{{ route.label }}</span>
+  </button>
+</div>

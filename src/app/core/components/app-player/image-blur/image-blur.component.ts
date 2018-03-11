@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-image-blur',
-  styleUrls: ['./image-blur.scss'],
-  template: `
-  <div class="media-bg" [ngStyle]="style"></div>
-  `,
+  styleUrls: ['./image-blur.component.scss'],
+  templateUrl: './image-blur.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageBlurComponent {
