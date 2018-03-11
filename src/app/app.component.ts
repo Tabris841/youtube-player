@@ -5,7 +5,8 @@ import { EchoesState } from '@store/reducers';
 import { getSidebarCollapsed, getAppTheme } from '@store/app-layout';
 
 @Component({
-  selector: 'app-body',
+  // tslint:disable-next-line:component-selector
+  selector: 'body',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

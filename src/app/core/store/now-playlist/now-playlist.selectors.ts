@@ -1,8 +1,8 @@
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { createSelector } from '@ngrx/store';
+
 import { INowPlaylist } from './now-playlist.reducer';
-import { createSelector } from '@ngrx/store/src/selector';
-import { EchoesState } from '../reducer';
+import { EchoesState } from '@store/reducers';
 
 export const getNowPlaylist = (state: EchoesState) => state.nowPlaylist;
 export const isPlayerInRepeat = createSelector(

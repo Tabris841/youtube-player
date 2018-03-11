@@ -6,13 +6,13 @@ import { take, map } from 'rxjs/operators';
 import * as AppPlayer from '@store/app-player';
 import * as NowPlaylist from '@store/now-playlist';
 import { EchoesState } from '@store/reducers';
+import { NowPlaylistEffects } from '@core/effects/now-playlist.effects';
 
 @Injectable()
 export class AppPlayerApi {
   constructor(
     private store: Store<EchoesState>,
-    private nowPlaylistEffects: NowPlaylistEffects,
-    private nowPlaylistActions: NowPlaylist.NowPlaylistActions
+    private nowPlaylistEffects: NowPlaylistEffects
   ) {}
 
   playPlaylist(playlist: GoogleApiYouTubePlaylistResource) {

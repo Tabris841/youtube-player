@@ -4,7 +4,7 @@ import { ActionReducerMap, Store } from '@ngrx/store';
 // import { routerReducer, RouterReducerState } from '@ngrx/router-store';
 
 // reducers
-import { IAppPlayer, player, ActionTypes } from './app-player';
+import { IAppPlayer, player } from './app-player';
 import { INowPlaylist, nowPlaylist, NowPlaylistActions } from './now-playlist';
 import { IUserProfile, user } from './user-profile';
 import { IPlayerSearch, search, PlayerSearchActions } from './player-search';

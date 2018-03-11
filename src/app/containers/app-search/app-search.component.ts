@@ -19,11 +19,11 @@ import * as PlayerSearch from '@core/store/player-search';
     [immediateCheck]="true">
     <app-navbar>
       <div class="navbar-header">
-        <player-search
+        <app-player-search
           [query]="query$ | async"
           (queryChange)="resetPageToken($event)"
           (search)="search($event)"
-        ></player-search>
+        ></app-player-search>
       </div>
       <app-button-group class="nav-toolbar"
         [buttons]="presets$ | async"

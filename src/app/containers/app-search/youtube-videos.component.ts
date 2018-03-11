@@ -8,7 +8,7 @@ import * as PlayerSearch from '@store/player-search';
 
 @Component({
   selector: 'app-youtube-videos',
-  styleUrls: ['./youtube-videos.scss'],
+  styleUrls: ['./youtube-videos.component.scss'],
   template: `
     <app-loader [message]="'Loading Awesome Media Results'" [loading]="loading$ | async"></app-loader>
     <app-youtube-list

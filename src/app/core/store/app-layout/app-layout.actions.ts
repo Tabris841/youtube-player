@@ -10,7 +10,7 @@ export class AppLayoutActionTypes {
   static APP_THEME_CHANGE = '[App Theme] APP_THEME_CHANGE';
 }
 
-export class ReceivedAppVersion implements Action {
+export class RecievedAppVersion implements Action {
   public type = AppLayoutActionTypes.APP_VERSION_RECEIVED;
 
   constructor(public payload: any) {}
@@ -48,7 +48,7 @@ export class ThemeChange implements Action {
 }
 
 export type AppLayoutAction =
-  | ReceivedAppVersion
+  | RecievedAppVersion
   | UpdateAppVersion
   | CheckVersion
   | ExpandSidebar

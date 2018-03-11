@@ -1,8 +1,7 @@
 import { Store, createSelector } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 
+import { EchoesState } from '@store/reducers';
 import { IPlayerSearch, IQueryParam } from './player-search.reducer';
-import { EchoesState } from '../reducer';
 
 export const getPlayerSearch = (state: EchoesState) => state.search;
 export const getPlayerSearchResults = createSelector(
