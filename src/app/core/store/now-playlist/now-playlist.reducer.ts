@@ -15,10 +15,10 @@ const initialState: INowPlaylist = {
   repeat: false
 };
 
-export const nowPlaylist: ActionReducer<INowPlaylist> = (
+export function nowPlaylist(
   state: INowPlaylist = initialState,
   action: NowPlaylistActions
-) => {
+): INowPlaylist {
   switch (action.type) {
     case NowPlaylistTypes.SELECT:
       return { ...state, selectedId: action.payload.id };
@@ -45,7 +45,7 @@ export const nowPlaylist: ActionReducer<INowPlaylist> = (
     default:
       return state;
   }
-};
+}
 
 function addMedia(videos: GoogleApiYouTubeVideoResource[], media: any) {
   const newMedia = [...videos].findIndex(video => video.id === media.id);

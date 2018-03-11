@@ -21,7 +21,6 @@ import { AppApi } from '@api/app.api';
 })
 export class AppNavbarComponent implements OnInit {
   user$ = this.appApi.user$;
-  appVersion$ = this.appApi.appVersion$;
   themes$ = this.appApi.themes$;
 
   @Input() header: string;
@@ -48,14 +47,6 @@ export class AppNavbarComponent implements OnInit {
 
   isSignIn() {
     return this.authorization.isSignIn();
-  }
-
-  updateVersion() {
-    this.appApi.updateVersion();
-  }
-
-  checkVersion() {
-    this.appApi.checkVersion();
   }
 
   handleMainIconClick() {

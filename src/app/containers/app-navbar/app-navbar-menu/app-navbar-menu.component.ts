@@ -37,8 +37,6 @@ export class AppNavbarMenuComponent implements OnInit {
   };
   @Input() theme = { themes: [], selected: '' };
   @Output() signOut = new EventEmitter();
-  @Output() versionUpdate = new EventEmitter();
-  @Output() versionCheck = new EventEmitter();
   @Output() themeChange = new EventEmitter();
 
   @HostListener('keyup', ['$event'])
@@ -62,14 +60,6 @@ export class AppNavbarMenuComponent implements OnInit {
 
   toggleMenu() {
     this.hide = !this.hide;
-  }
-
-  handleVersionUpdate() {
-    this.versionUpdate.emit();
-  }
-
-  handleVersionCheck() {
-    this.versionCheck.emit();
   }
 
   updateTheme(theme) {

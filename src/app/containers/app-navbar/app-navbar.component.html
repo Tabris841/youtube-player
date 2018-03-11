@@ -11,8 +11,7 @@
     </div>
     <section class="navbar-text navbar-actions">
       <app-navbar-user [signedIn]="isSignIn()" [userImageUrl]="(user$ | async).profile.imageUrl" (signIn)="signInUser()"></app-navbar-user>
-      <app-navbar-menu [appVersion]="appVersion$ | async" [theme]="themes$ | async" (themeChange)="changeTheme($event)" [signedIn]="isSignIn()"
-        (signOut)="signOutUser()" (versionUpdate)="updateVersion()" (versionCheck)="checkVersion()"></app-navbar-menu>
+      <app-navbar-menu [theme]="themes$ | async" (themeChange)="changeTheme($event)" [signedIn]="isSignIn()" (signOut)="signOutUser()"></app-navbar-menu>
     </section>
   </div>
 </nav>
