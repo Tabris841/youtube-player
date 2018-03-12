@@ -1,6 +1,6 @@
-import { Store } from '@ngrx/store';
-import { VersionCheckerService } from './core/services/version-checker.service';
 import { Component, HostBinding, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
 import { EchoesState } from '@store/reducers';
 import { getSidebarCollapsed, getAppTheme } from '@store/app-layout';
 
@@ -18,10 +18,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private store: Store<EchoesState>,
-    private versionCheckerService: VersionCheckerService
-  ) {
-    versionCheckerService.start();
-  }
+  ) {}
 
   ngOnInit() {
     this.theme$.subscribe(theme => (this.style = theme));

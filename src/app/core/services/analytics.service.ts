@@ -18,6 +18,7 @@ const Events = {
 const CustomEvents = {
   VIDEO_PLAY: 'video_play'
 };
+
 @Injectable()
 export class AnalyticsService {
   private projectId = window['GA_PROJECT_ID'];

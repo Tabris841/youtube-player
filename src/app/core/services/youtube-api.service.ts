@@ -1,17 +1,7 @@
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Authorization } from './authorization.service';
-import { environment } from '../../../environments/environment';
-
-interface YoutubeApiServiceOptions {
-  url?: string;
-  http?: HttpClient;
-  idKey?: string;
-  authService?: Authorization;
-  config?: any;
-  authorize?: boolean;
-}
+import {environment} from '@env/environment';
 
 const defaultParams = {
   part: 'snippet,contentDetails',
