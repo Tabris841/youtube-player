@@ -10,7 +10,6 @@ import * as UserActions from '@store/user-profile';
 @Injectable()
 export class AppApi {
   themes$ = this.store.select(AppLayout.getAppThemes);
-  appVersion$ = this.store.select(AppLayout.getAppVersion);
   user$ = this.store.select(UserActions.getUser);
 
   constructor(private store: Store<EchoesState>) {}
@@ -23,24 +22,8 @@ export class AppApi {
     this.store.dispatch(new RouterActions.Back());
   }
 
-  updateVersion() {
-    this.store.dispatch(new AppLayout.UpdateAppVersion());
-  }
-
-  checkVersion() {
-    this.store.dispatch(new AppLayout.CheckVersion());
-  }
-
   changeTheme(theme: string) {
     this.store.dispatch(new AppLayout.ThemeChange(theme));
-  }
-
-  notifyNewVersion(response) {
-    this.store.dispatch(new AppLayout.RecievedAppVersion(response));
-  }
-
-  recievedNewVersion(response) {
-    this.store.dispatch(new AppLayout.RecievedAppVersion(response));
   }
 
   // AUTHORIZATION
