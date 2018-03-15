@@ -1,14 +1,13 @@
-import { RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { ActionReducerMap, Store } from '@ngrx/store';
-// import { routerReducer, RouterReducerState } from '@ngrx/router-store';
+import { ActionReducerMap } from '@ngrx/store';
+import * as fromRouter from '@ngrx/router-store';
 
 // reducers
 import { IAppPlayer, player } from './app-player';
-import { INowPlaylist, nowPlaylist, NowPlaylistActions } from './now-playlist';
+import { INowPlaylist, nowPlaylist } from './now-playlist';
 import { IUserProfile, user } from './user-profile';
-import { IPlayerSearch, search, PlayerSearchActions } from './player-search';
+import { IPlayerSearch, search } from './player-search';
 import { IAppSettings, appLayout } from './app-layout';
+import { RouterStateUrl } from './router-store';
 
 // The top level Echoes Player application interface
 // each reducer is reponsible for manipulating a certain state
@@ -18,7 +17,7 @@ export interface EchoesState {
   user: IUserProfile;
   search: IPlayerSearch;
   appLayout: IAppSettings;
-  // routerReducer: RouterReducerState;
+  router: fromRouter.RouterReducerState<RouterStateUrl>;
 }
 
 export let EchoesReducers: ActionReducerMap<EchoesState> = {
@@ -26,13 +25,6 @@ export let EchoesReducers: ActionReducerMap<EchoesState> = {
   nowPlaylist,
   user,
   search,
-  appLayout
-  // routerReducer
+  appLayout,
+  router: fromRouter.routerReducer
 };
-
-// export let EchoesActions = [
-//   ActionTypes,
-//   NowPlaylistActions,
-//   UserProfileActions,
-//   PlayerSearchActions
-// ];

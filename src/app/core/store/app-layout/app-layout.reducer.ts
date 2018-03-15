@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+
 import { AppLayoutActionTypes, AppLayoutAction } from './app-layout.actions';
 import { Themes, DEFAULT_THEME } from '../../../app.themes';
 
@@ -35,7 +35,7 @@ export function appLayout(
     }
 
     default:
-      return { ...initialState, ...state, themes: Themes.sort() };
+      return { ...initialState, ...state, themes: [...Themes.sort()] };
   }
 }
 

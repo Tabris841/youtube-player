@@ -3,7 +3,6 @@ import { Action } from '@ngrx/store';
 export enum NowPlaylistTypes {
   QUEUE_LOAD_VIDEO = '[NowPlaylist] QUEUE_LOAD_VIDEO',
   QUEUE = '[NowPlaylist] QUEUE',
-  QUEUE_LOAD_VIDEO_SUCCESS = '[NowPlaylist] QUEUE_LOAD_VIDEO_SUCCESS',
   SELECT = '[NowPlaylist] SELECT',
   REMOVE = '[NowPlaylist] REMOVE',
   UPDATE_INDEX = '[NowPlaylist] UPDATE_INDEX',
